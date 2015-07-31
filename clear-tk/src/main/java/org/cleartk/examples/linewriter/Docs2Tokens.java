@@ -65,7 +65,7 @@ public class Docs2Tokens {
         shortName = "o",
         longName = "outputFileName",
         description = "specify the file to write tokens to",
-        defaultValue = "target/output.txt")
+        defaultValue = "../ruta/input/cleartk-output")
     public File getOutputFile();
 
   }

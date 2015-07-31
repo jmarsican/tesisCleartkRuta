@@ -3,4 +3,5 @@ target/
 .classpath
 .settings
 .project
+/ruta/input/
 /ruta/output/
