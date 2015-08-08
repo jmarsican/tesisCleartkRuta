@@ -63,9 +63,9 @@ public class Docs2Tokens {
 
     @Option(
         shortName = "o",
-        longName = "outputFileName",
-        description = "specify the file to write tokens to",
-        defaultValue = "../ruta/input/cleartk-output")
+        longName = "outputPath",
+        description = "specify the dir to write output files",
+        defaultValue = "../ruta/input")
     public File getOutputFile();
 
   }
@@ -85,8 +85,8 @@ public class Docs2Tokens {
     AnalysisEngineDescription posTagger = PosTaggerAnnotator.getDescription();
 
     AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(XMIWriter.class,
-    		XMIWriter.PARAM_OUTPUT_FILE_NAME,
-            options.getOutputFile().getAbsolutePath());
+    		XMIWriter.PARAM_OUTPUT_PATH,
+            options.getOutputFile().getCanonicalPath());
 
     SimplePipeline.runPipeline(reader, uriToText, sentences, tokenizer, posTagger, xmiWriter);
     System.out.println("results written to " + options.getOutputFile());
