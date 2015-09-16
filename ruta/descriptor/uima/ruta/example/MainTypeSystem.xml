@@ -3,9 +3,9 @@
     <name>uima.ruta.example.MainTypeSystem</name>
     <imports>
         <import location="../../../BasicTypeSystem.xml"/>
-        <import location="../../../types/BibtexTypeSystem.xml"/>
-        <import location="AuthorTypeSystem.xml"/>
-        <import location="YearTypeSystem.xml"/>
-        <import location="TitleTypeSystem.xml"/>
+        <import location="../../../../target/classes/types/BibtexTypeSystem.xml"/>
+        <import location="../../../../target/classes/uima/ruta/example/AuthorTypeSystem.xml"/>
+        <import location="../../../../target/classes/uima/ruta/example/YearTypeSystem.xml"/>
+        <import location="../../../../target/classes/uima/ruta/example/TitleTypeSystem.xml"/>
     </imports>
 </typeSystemDescription>
