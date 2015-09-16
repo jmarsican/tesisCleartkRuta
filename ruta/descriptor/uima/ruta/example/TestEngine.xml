@@ -223,7 +223,7 @@
                 <name>scriptPaths</name>
                 <value>
                     <array>
-                        <string>C:/Users/Andres/projects/tesis/ruta/script</string>
+                        <string>C:/Users/Andres/projects/tesis/tesisCleartkRuta/ruta/script</string>
                     </array>
                 </value>
             </nameValuePair>
@@ -231,8 +231,8 @@
                 <name>descriptorPaths</name>
                 <value>
                     <array>
-                        <string>C:/Users/Andres/projects/tesis/ruta/target/classes</string>
-                        <string>C:/Users/Andres/projects/tesis/ruta/descriptor</string>
+                        <string>C:/Users/Andres/projects/tesis/tesisCleartkRuta/ruta/target/classes</string>
+                        <string>C:/Users/Andres/projects/tesis/tesisCleartkRuta/ruta/descriptor</string>
                     </array>
                 </value>
             </nameValuePair>
@@ -240,8 +240,8 @@
                 <name>resourcePaths</name>
                 <value>
                     <array>
-                        <string>C:\Users\Andres\projects\tesis\ruta\target\resources</string>
-                        <string>C:\Users\Andres\projects\tesis\ruta\resources</string>
+                        <string>C:\Users\Andres\projects\tesis\tesisCleartkRuta\ruta\target\resources</string>
+                        <string>C:\Users\Andres\projects\tesis\tesisCleartkRuta\ruta\resources</string>
                     </array>
                 </value>
             </nameValuePair>
@@ -280,16 +280,40 @@
             <name>uima.ruta.example.TestTypeSystem</name>
             <imports>
                 <import location="../../../BasicTypeSystem.xml"/>
-                <import location="../../../types/BibtexTypeSystem.xml"/>
+                <import location="../../../../target/classes/org/cleartk/TypeSystem.xml"/>
             </imports>
             <types>
                 <typeDescription>
-                    <name>uima.ruta.example.Test.FirstName</name>
+                    <name>uima.ruta.example.Test.Noun</name>
+                    <description>Type defined in uima.ruta.example.Test</description>
+                    <supertypeName>uima.tcas.Annotation</supertypeName>
+                    <features>
+                        <featureDescription>
+                            <name>pos</name>
+                            <description>pos</description>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                    </features>
+                </typeDescription>
+                <typeDescription>
+                    <name>uima.ruta.example.Test.Prueba</name>
                     <description>Type defined in uima.ruta.example.Test</description>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                 </typeDescription>
                 <typeDescription>
-                    <name>uima.ruta.example.Test.FirstName</name>
+                    <name>uima.ruta.example.Test.Noun</name>
+                    <description>Type defined in uima.ruta.example.Test</description>
+                    <supertypeName>uima.tcas.Annotation</supertypeName>
+                    <features>
+                        <featureDescription>
+                            <name>pos</name>
+                            <description>pos</description>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                    </features>
+                </typeDescription>
+                <typeDescription>
+                    <name>uima.ruta.example.Test.Prueba</name>
                     <description>Type defined in uima.ruta.example.Test</description>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                 </typeDescription>
@@ -311,10 +335,12 @@
             </capability>
             <capability>
                 <inputs>
-                    <type>uima.ruta.example.Test.FirstName</type>
+                    <type>uima.ruta.example.Test.Noun</type>
+                    <type>uima.ruta.example.Test.Prueba</type>
                 </inputs>
                 <outputs>
-                    <type>uima.ruta.example.Test.FirstName</type>
+                    <type>uima.ruta.example.Test.Noun</type>
+                    <type>uima.ruta.example.Test.Prueba</type>
                 </outputs>
                 <languagesSupported/>
             </capability>

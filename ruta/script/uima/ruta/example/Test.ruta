@@ -1,14 +1,10 @@
 PACKAGE uima.ruta.example;
 
 // import the types of this type system:
-TYPESYSTEM types.BibtexTypeSystem;
+TYPESYSTEM org.cleartk.TypeSystem;
 
-// define and import an external dictionary containing first names
-WORDLIST FirstNameList = 'FirstNames.txt';
+DECLARE Annotation Noun(STRING pos);
+DECLARE Prueba;
 
-// define some useful annotations
-DECLARE FirstName;
-
-//find the first names
-Document{-> MARKFAST(FirstName, FirstNameList)};
-FirstName;
+ANY {Token.pos=="NN" -> Noun};
+Token{REGEXP("For") -> Prueba};

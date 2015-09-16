@@ -3,7 +3,7 @@
     <name>uima.ruta.example.AuthorTypeSystem</name>
     <imports>
         <import location="../../../BasicTypeSystem.xml"/>
-        <import location="../../../types/BibtexTypeSystem.xml"/>
+        <import location="../../../../target/classes/types/BibtexTypeSystem.xml"/>
     </imports>
     <types>
         <typeDescription>

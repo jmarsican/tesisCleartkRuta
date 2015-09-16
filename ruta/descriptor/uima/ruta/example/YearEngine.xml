@@ -223,7 +223,7 @@
                 <name>scriptPaths</name>
                 <value>
                     <array>
-                        <string>C:/Users/Andres/projects/tesis/ruta/script</string>
+                        <string>C:/Users/Andres/projects/tesis/tesisCleartkRuta/ruta/script</string>
                     </array>
                 </value>
             </nameValuePair>
@@ -231,8 +231,8 @@
                 <name>descriptorPaths</name>
                 <value>
                     <array>
-                        <string>C:/Users/Andres/projects/tesis/ruta/target/classes</string>
-                        <string>C:/Users/Andres/projects/tesis/ruta/descriptor</string>
+                        <string>C:/Users/Andres/projects/tesis/tesisCleartkRuta/ruta/target/classes</string>
+                        <string>C:/Users/Andres/projects/tesis/tesisCleartkRuta/ruta/descriptor</string>
                     </array>
                 </value>
             </nameValuePair>
@@ -240,8 +240,8 @@
                 <name>resourcePaths</name>
                 <value>
                     <array>
-                        <string>C:\Users\Andres\projects\tesis\ruta\target\resources</string>
-                        <string>C:\Users\Andres\projects\tesis\ruta\resources</string>
+                        <string>C:\Users\Andres\projects\tesis\tesisCleartkRuta\ruta\target\resources</string>
+                        <string>C:\Users\Andres\projects\tesis\tesisCleartkRuta\ruta\resources</string>
                     </array>
                 </value>
             </nameValuePair>
@@ -280,7 +280,7 @@
             <name>uima.ruta.example.YearTypeSystem</name>
             <imports>
                 <import location="../../../BasicTypeSystem.xml"/>
-                <import location="../../../types/BibtexTypeSystem.xml"/>
+                <import location="../../../../target/classes/types/BibtexTypeSystem.xml"/>
             </imports>
         </typeSystemDescription>
         <typePriorities>
