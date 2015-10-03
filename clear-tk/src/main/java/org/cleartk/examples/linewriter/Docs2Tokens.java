@@ -36,6 +36,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.cleartk.clearnlp.MpAnalyzer;
 import org.cleartk.opennlp.tools.PosTaggerAnnotator;
 import org.cleartk.opennlp.tools.SentenceAnnotator;
 import org.cleartk.token.tokenizer.TokenAnnotator;
@@ -82,13 +83,15 @@ public class Docs2Tokens {
 
     AnalysisEngineDescription tokenizer = TokenAnnotator.getDescription();
 
+    AnalysisEngineDescription lemmatizator = MpAnalyzer.getDescription();
+
     AnalysisEngineDescription posTagger = PosTaggerAnnotator.getDescription();
 
     AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(XMIWriter.class,
     		XMIWriter.PARAM_OUTPUT_PATH,
             options.getOutputFile().getCanonicalPath());
 
-    SimplePipeline.runPipeline(reader, uriToText, sentences, tokenizer, posTagger, xmiWriter);
+    SimplePipeline.runPipeline(reader, uriToText, sentences, tokenizer, posTagger, lemmatizator, xmiWriter);
     System.out.println("results written to " + options.getOutputFile());
 
 //    InputStream inputStream = new FileInputStream(options.getOutputFile());

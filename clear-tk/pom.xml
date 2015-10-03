@@ -95,6 +95,10 @@
 			<artifactId>cleartk-opennlp-tools</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.cleartk</groupId>
+			<artifactId>cleartk-clearnlp</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
 		</dependency>
