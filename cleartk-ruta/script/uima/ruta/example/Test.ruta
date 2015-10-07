@@ -1,0 +1,10 @@
+PACKAGE uima.ruta.example;
+
+// import the types of this type system:
+TYPESYSTEM org.cleartk.TypeSystem;
+
+DECLARE Annotation Noun(STRING pos);
+DECLARE Prueba;
+
+ANY {Token.pos=="NN" -> Noun};
+Token{REGEXP("For") -> Prueba};
