@@ -1,8 +1,7 @@
-target/
-
 .classpath
 .settings
 .project
-/ruta/input/
-/ruta/output/
-/ruta/descriptor/uima/ruta/
+/cleartk-ruta/input/
+/cleartk-ruta/output/
+/cleartk-ruta/descriptor/uima/ruta/
+/cleartk-ruta/target/
