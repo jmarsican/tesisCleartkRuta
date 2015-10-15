@@ -43,7 +43,7 @@ import com.lexicalscope.jewel.cli.Option;
  * Copyright (c) 2011, Regents of the University of Colorado <br>
  * All rights reserved.
  */
-public class Docs2Tokens {
+public class XMIGenerator {
 
   public interface Options {
     @Option(
@@ -58,7 +58,7 @@ public class Docs2Tokens {
         longName = "outputPath",
         description = "specify the dir to write output files",
         defaultValue = "input")
-    public File getOutputFile();
+    public File getOutputDir();
 
   }
 
@@ -80,9 +80,9 @@ public class Docs2Tokens {
 
     AnalysisEngineDescription xmiWriter = AnalysisEngineFactory.createEngineDescription(XMIWriter.class,
     		XMIWriter.PARAM_OUTPUT_PATH,
-            options.getOutputFile().getCanonicalPath());
+            options.getOutputDir().getCanonicalPath());
 
     SimplePipeline.runPipeline(reader, uriToText, sentences, tokenizer, posTagger, lemmatizator, xmiWriter);
-    System.out.println("results written to " + options.getOutputFile());
+    System.out.println("results written to " + options.getOutputDir());
   }
 }

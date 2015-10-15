@@ -4,7 +4,14 @@ PACKAGE uima.ruta.example;
 TYPESYSTEM org.cleartk.TypeSystem;
 
 DECLARE Annotation Noun(STRING pos);
-DECLARE Prueba;
 
-ANY {Token.pos=="NN" -> Noun};
-Token{REGEXP("For") -> Prueba};
+// define and import an external dictionary containing first names
+WORDLIST FirstNameList = 'lemmas/performanceKeywords.txt';
+
+// define some useful annotations
+DECLARE lemmatizedName, performanceToken, performanceSentence;
+
+//find the first names
+Token{INLIST(FirstNameList,Token.lemma)->MARK(performanceToken)};
+
+Sentence{CONTAINS(performanceToken)->MARK(performanceSentence)};
