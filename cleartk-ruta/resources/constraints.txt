@@ -1,0 +1,14 @@
+CONSTRAINTS
+accuracy
+respond
+response
+responsiveness
+latency
+criticality
+demand
+exceed
+precedence
+deadline
+simultaneous
+overload
+must 

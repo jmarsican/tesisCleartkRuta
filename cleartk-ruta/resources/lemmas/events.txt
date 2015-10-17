@@ -1,0 +1,10 @@
+event
+transaction
+interrupt
+update
+arrive
+process
+calculation
+complete
+sampling
+deliver
