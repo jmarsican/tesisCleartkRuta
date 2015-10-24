@@ -20,9 +20,10 @@ Token{INLIST(kwds_time,Token.lemma)->MARK(tokenTime)};
 Token{INLIST(kwds_LTD,Token.lemma)->MARK(tokenLTD)};
 Token{INLIST(kwds_event,Token.lemma)->MARK(tokenEvent)};
 
-Sentence{AND(CONTAINS(tokenEvent),CONTAINS(tokenTime))->MARK(performanceSentence)};
-Sentence{AND(CONTAINS(tokenEvent),CONTAINS(tokenConstraint))->MARK(performanceSentence)};
-Sentence{AND(CONTAINS(tokenEvent),CONTAINS(tokenLTD))->MARK(performanceSentence)};
-
-Sentence{AND(CONTAINS(tokenTime),CONTAINS(tokenConstraint))->MARK(performanceSentence)};
-Sentence{AND(CONTAINS(tokenLTD),CONTAINS(tokenConstraint))->MARK(performanceSentence)};
+Sentence{OR(
+  AND(CONTAINS(tokenEvent),CONTAINS(tokenTime)),
+  AND(CONTAINS(tokenEvent),CONTAINS(tokenConstraint)),
+  AND(CONTAINS(tokenEvent),CONTAINS(tokenLTD)),
+  AND(CONTAINS(tokenTime),CONTAINS(tokenConstraint)),
+  AND(CONTAINS(tokenLTD),CONTAINS(tokenConstraint))
+)->MARK(performanceSentence)};
