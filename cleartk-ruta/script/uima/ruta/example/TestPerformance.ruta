@@ -12,7 +12,7 @@ WORDLIST kwds_constraint = 'lemmas/constraints.txt';
 WORDLIST kwds_event = 'lemmas/events.txt';
 
 // define some useful annotations
-DECLARE tokenTime, tokenLTD, tokenConstraint, tokenEvent, performanceSentence;
+DECLARE tokenTime, tokenLTD, tokenStart, tokenEnd, tokenConstraint, tokenEvent, performanceSentence;
 
 //disambiguation of any word of seconds(time) or any 
 NUM Token{REGEXP(".*second[s]?")->Token.lemma="#time#"};
@@ -23,10 +23,14 @@ Token{INLIST(kwds_time,Token.lemma)->MARK(tokenTime)};
 Token{INLIST(kwds_LTD,Token.lemma)->MARK(tokenLTD)};
 Token{INLIST(kwds_event,Token.lemma)->MARK(tokenEvent)};
 
+Token{REGEXP("start")->UNMARK(tokenStart)};
+Token{REGEXP("end")->UNMARK(tokenEnd)};
+
 Sentence{OR(
   AND(CONTAINS(tokenEvent),CONTAINS(tokenTime)),
   AND(CONTAINS(tokenEvent),CONTAINS(tokenConstraint)),
   AND(CONTAINS(tokenEvent),CONTAINS(tokenLTD)),
+  AND(CONTAINS(tokenEvent),CONTAINS(tokenStart),CONTAINS(tokenEnd)),
   AND(CONTAINS(tokenTime),CONTAINS(tokenConstraint)),
   AND(CONTAINS(tokenLTD),CONTAINS(tokenConstraint))
 )->MARK(performanceSentence)};
