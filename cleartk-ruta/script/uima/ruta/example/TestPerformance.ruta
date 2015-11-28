@@ -15,7 +15,7 @@ WORDLIST kwds_event = 'lemmas/events.txt';
 DECLARE tokenTime, tokenLTD, tokenStart, tokenEnd, tokenConstraint, tokenEvent, performanceSentence;
 
 //disambiguation of any word of seconds(time) or any 
-NUM Token{REGEXP(".*second[s]?")->Token.lemma="#time#"};
+NUM Token{REGEXP(".*second[s]?", true)->Token.lemma="#time#"};
 
 //Mark perfomance tokens that matches with the list of taxonomies words
 Token{INLIST(kwds_constraint,Token.lemma)->MARK(tokenConstraint)};
@@ -23,8 +23,8 @@ Token{INLIST(kwds_time,Token.lemma)->MARK(tokenTime)};
 Token{INLIST(kwds_LTD,Token.lemma)->MARK(tokenLTD)};
 Token{INLIST(kwds_event,Token.lemma)->MARK(tokenEvent)};
 
-Token{REGEXP("start")->UNMARK(tokenStart)};
-Token{REGEXP("end")->UNMARK(tokenEnd)};
+Token{REGEXP("start", true)->MARK(tokenStart)};
+Token{REGEXP("end", true)->MARK(tokenEnd)};
 
 Sentence{OR(
   AND(CONTAINS(tokenEvent),CONTAINS(tokenTime)),
