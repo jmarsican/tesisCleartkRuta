@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>tesis</groupId>
+	<artifactId>cleartk-ruta</artifactId>
+	<packaging>jar</packaging>
+
+	<scm>
+		<connection>scm:git:https://code.google.com/p/cleartk/</connection>
+		<developerConnection>scm:git:https://code.google.com/p/cleartk/</developerConnection>
+		<url>https://code.google.com/p/cleartk/</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<parent>
+		<artifactId>cleartk</artifactId>
+		<groupId>org.cleartk</groupId>
+		<version>2.0.0</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.lexicalscope.jewelcli</groupId>
+			<artifactId>jewelcli</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.cleartk</groupId>
+			<artifactId>cleartk-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.cleartk</groupId>
+			<artifactId>cleartk-opennlp-tools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.cleartk</groupId>
+			<artifactId>cleartk-token</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.cleartk</groupId>
+			<artifactId>cleartk-clearnlp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.abdn</groupId>
+			<artifactId>SimpleNLG</artifactId>
+			<version>4.4.7-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+</project>
