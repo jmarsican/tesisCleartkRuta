@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edu.exa.unicen.scenario:SpecificScenario xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.exa.unicen.scenario="http://edu/exa/unicen/scenario" source="test" stimulus="test" environment="test" artifact="test" response="test" measure="test" qualityAttribute="test"/>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            id="edu.exa.unicen.qascenario.ui.contribution1">
+         <menu
+               label="QA Scenario"
+               path="additions"
+               id="edu.exa.unicen.qascenario.ui.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               class="edu.exa.unicen.qascenario.ui.popup.actions.OpenScenarioDialogAction"
+               enablesFor="1"
+               id="edu.exa.unicen.qascenario.ui.newAction2"
+               label="Edit General Scenario"
+               menubarPath="edu.exa.unicen.qascenario.ui.menu1/group1">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

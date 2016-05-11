@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/edu.exa.unicen.qascenario/src" modelPluginID="edu.exa.unicen.qascenario"
+    modelName="Scenario" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>scenario.ecore</foreignModel>
+  <genPackages prefix="Scenario" disposableProviderFactory="true" ecorePackage="scenario.ecore#/">
+    <genClasses ecoreClass="scenario.ecore#//GeneralScenario">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/qualityAttribute"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/stimulus"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/environment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/artifact"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/response"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//GeneralScenario/measure"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//GeneralScenario/test"/>
+    </genClasses>
+    <genClasses ecoreClass="scenario.ecore#//SpecificScenario">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/stimulus"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/environment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/artifact"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/response"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/measure"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//SpecificScenario/qualityAttribute"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
