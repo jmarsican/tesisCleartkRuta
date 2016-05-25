@@ -28,24 +28,17 @@ import uima.ruta.example.TestPerformance.tokenConstraint;
 
 public class XMIReaderTest {
 
-	private static final String XMI_FILE_PATH = "output/supplspec_v1.htm.txt.xmi";
+	private static final String XMI_FILE_PATH = "input/supplspec_v1.htm.txt.xmi";
 	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";
-
+	
 	public static void main(String[] args) throws Exception {
 
 		TypeSystemDescription tsd = TypeSystemDescriptionFactory
 				.createTypeSystemDescriptionFromPath(TYPE_SYSTEM_FILE_PATH);
-
 		JCas jCas = JCasFactory.createJCas(tsd);
 
-		CasIOUtil.readXmi(jCas, new File(XMI_FILE_PATH));
-
-		Collection<performanceSentence> tokens = JCasUtil.select(jCas, performanceSentence.class);
-		for (performanceSentence token : tokens) {
-			System.out.println(token);
-		}
 		/*****/
-		URL aedesc = RutaEngine.class.getResource("descriptor/uima/ruta/example/TestPerformanceEngine.xml");
+		File aedesc = new File("descriptor/uima/ruta/example/TestPerformanceEngine.xml");
 		XMLInputSource inae = new XMLInputSource(aedesc);
 		ResourceSpecifier specifier = UIMAFramework.getXMLParser().
 		    parseResourceSpecifier(inae);		
@@ -62,9 +55,16 @@ public class XMIReaderTest {
 		String name = scriptFile.getName().substring(0, scriptFile.getName().length() - 5);
 		ae.setConfigParameterValue(RutaEngine.PARAM_MAIN_SCRIPT, name);
 		ae.reconfigure();
-		CAS cas = ae.newCAS();
-		cas.setDocumentText("This is my document.");
+		
+		CasIOUtil.readXmi(jCas, new File(XMI_FILE_PATH));		
+		CAS cas = jCas.getCas();
 		ae.process(cas);
+		
+		Collection<performanceSentence> tokens = JCasUtil.select(cas.getJCas(), performanceSentence.class);
+		for (performanceSentence token : tokens) {
+			System.out.println(token);
+			System.out.println(token.getCoveredText());
+		}
 	}
 
 }
