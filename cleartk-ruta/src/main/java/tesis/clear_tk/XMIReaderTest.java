@@ -23,6 +23,9 @@ import org.apache.uima.ruta.engine.RutaEngine;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
+import uima.ruta.example.TestPerformance.performanceSentence;
+import uima.ruta.example.TestPerformance.tokenConstraint;
+
 public class XMIReaderTest {
 
 	private static final String XMI_FILE_PATH = "output/supplspec_v1.htm.txt.xmi";
@@ -37,28 +40,18 @@ public class XMIReaderTest {
 
 		CasIOUtil.readXmi(jCas, new File(XMI_FILE_PATH));
 
-		Collection<Annotation> tokens = JCasUtil.select(jCas, Annotation.class);
-		for (Annotation token : tokens) {
+		Collection<performanceSentence> tokens = JCasUtil.select(jCas, performanceSentence.class);
+		for (performanceSentence token : tokens) {
 			System.out.println(token);
 		}
 		/*****/
 		URL aedesc = RutaEngine.class.getResource("descriptor/uima/ruta/example/TestPerformanceEngine.xml");
 		XMLInputSource inae = new XMLInputSource(aedesc);
 		ResourceSpecifier specifier = UIMAFramework.getXMLParser().
-		    parseResourceSpecifier(inae);
-		ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+		    parseResourceSpecifier(inae);		
 		AnalysisEngineDescription aed = (AnalysisEngineDescription) specifier;
-		TypeSystemDescription basicTypeSystem = aed.getAnalysisEngineMetaData().
-		    getTypeSystem();
-
-		Collection<TypeSystemDescription> tsds = 
-		    new ArrayList<TypeSystemDescription>();
-		tsds.add(basicTypeSystem);
-		// add some other type system descriptors 
-		// that are needed by your script file   
-		TypeSystemDescription mergeTypeSystems = CasCreationUtils.
-		    mergeTypeSystems(tsds);
-		aed.getAnalysisEngineMetaData().setTypeSystem(mergeTypeSystems);
+			
+		ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
 		aed.resolveImports(resMgr);
 		        
 		AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aed, 
@@ -66,8 +59,7 @@ public class XMIReaderTest {
 		File scriptFile = new File("script/uima/ruta/example/TestPerformance.ruta");
 		ae.setConfigParameterValue(RutaEngine.PARAM_SCRIPT_PATHS, 
 		    new String[] { scriptFile.getParentFile().getAbsolutePath() });
-		String name = scriptFile.getName().substring(0, 
-		    scriptFile.getName().length() - 5);
+		String name = scriptFile.getName().substring(0, scriptFile.getName().length() - 5);
 		ae.setConfigParameterValue(RutaEngine.PARAM_MAIN_SCRIPT, name);
 		ae.reconfigure();
 		CAS cas = ae.newCAS();
