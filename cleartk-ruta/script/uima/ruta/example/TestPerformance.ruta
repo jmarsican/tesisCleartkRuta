@@ -3,8 +3,6 @@ PACKAGE uima.ruta.example;
 // import the types of this type system:
 TYPESYSTEM org.cleartk.TypeSystem;
 
-DECLARE Annotation Noun(STRING pos);
-
 // define and import an external dictionary containing first names
 WORDLIST kwds_time = 'lemmas/time.txt';
 WORDLIST kwds_LTD = 'lemmas/LTD.txt';
@@ -18,19 +16,19 @@ DECLARE tokenTime, tokenLTD, tokenStart, tokenEnd, tokenConstraint, tokenEvent, 
 NUM Token{REGEXP(".*second[s]?", true)->Token.lemma="#time#"};
 
 //Mark perfomance tokens that matches with the list of taxonomies words
-Token{INLIST(kwds_constraint,Token.lemma)->MARK(tokenConstraint)};
-Token{INLIST(kwds_time,Token.lemma)->MARK(tokenTime)};
-Token{INLIST(kwds_LTD,Token.lemma)->MARK(tokenLTD)};
-Token{INLIST(kwds_event,Token.lemma)->MARK(tokenEvent)};
+Token{INLIST(kwds_constraint,Token.lemma) -> MARK(tokenConstraint)};
+Token{INLIST(kwds_time,Token.lemma) -> MARK(tokenTime)};
+Token{INLIST(kwds_LTD,Token.lemma) -> MARK(tokenLTD)};
+Token{INLIST(kwds_event,Token.lemma) -> MARK(tokenEvent)};
 
-Token{REGEXP("start", true)->MARK(tokenStart)};
-Token{REGEXP("end", true)->MARK(tokenEnd)};
+Token{REGEXP("start", true) -> MARK(tokenStart)};
+Token{REGEXP("end", true) -> MARK(tokenEnd)};
 
 Sentence{OR(
-  AND(CONTAINS(tokenEvent),CONTAINS(tokenTime)),
-  AND(CONTAINS(tokenEvent),CONTAINS(tokenConstraint)),
-  AND(CONTAINS(tokenEvent),CONTAINS(tokenLTD)),
-  AND(CONTAINS(tokenEvent),CONTAINS(tokenStart),CONTAINS(tokenEnd)),
-  AND(CONTAINS(tokenTime),CONTAINS(tokenConstraint)),
-  AND(CONTAINS(tokenLTD),CONTAINS(tokenConstraint))
-)->MARK(performanceSentence)};
+  AND (CONTAINS(tokenEvent), CONTAINS(tokenTime)),
+  AND (CONTAINS(tokenEvent), CONTAINS(tokenConstraint)),
+  AND (CONTAINS(tokenEvent), CONTAINS(tokenLTD)),
+  AND (CONTAINS(tokenEvent), CONTAINS(tokenStart), CONTAINS(tokenEnd)),
+  AND (CONTAINS(tokenTime), CONTAINS(tokenConstraint)),
+  AND (CONTAINS(tokenLTD), CONTAINS(tokenConstraint))
+) -> MARK(performanceSentence)};

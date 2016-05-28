@@ -1,5 +1,6 @@
 .classpath
 .settings
+bin
 /cleartk-ruta/.buildpath
 /cleartk-ruta/input/
 /cleartk-ruta/output/
