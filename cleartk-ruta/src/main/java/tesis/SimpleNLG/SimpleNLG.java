@@ -16,11 +16,9 @@ public class SimpleNLG {
 		Realiser realiser = new Realiser(lexicon);
 
 		phrase.setSubject(factory.createNounPhrase("my dog"));
-		phrase.setVerb(factory.createVerbPhrase("chase"));
+		phrase.setVerb(factory.createVerbPhrase("chasing"));
 		phrase.setObject(factory.createNounPhrase("George"));
 		
-		phrase.setFeature(Feature.TENSE, Tense.PRESENT);
-		phrase.setFeature(Feature.TENSE, Tense.PRESENT);
 		phrase.setFeature(Feature.TENSE, Tense.PRESENT);
 		
 		System.out.println(realiser.realise(phrase));
