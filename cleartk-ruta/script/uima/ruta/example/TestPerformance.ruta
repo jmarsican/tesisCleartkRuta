@@ -12,14 +12,15 @@ WORDLIST kwds_constraint = 'lemmas/constraints.txt';
 WORDLIST kwds_event = 'lemmas/events.txt';
 
 // define some useful annotations
-DECLARE tokenTime, tokenLTD, tokenStart, tokenEnd, tokenConstraint, tokenEvent, performanceSentence;
+DECLARE Annotation tokenTime(STRING pos);
+DECLARE tokenLTD, tokenStart, tokenEnd, tokenConstraint, tokenEvent, performanceSentence;
 
 //disambiguation of any word of seconds(time) or any 
 NUM Token{REGEXP(".*second[s]?", true)->Token.lemma="#time#"};
 
 //Mark perfomance tokens that matches with the list of taxonomies words
 Token{INLIST(kwds_constraint,Token.lemma)->MARK(tokenConstraint)};
-Token{INLIST(kwds_time,Token.lemma)->MARK(tokenTime)};
+Token{INLIST(kwds_time,Token.lemma)->CREATE(tokenTime, "pos" = Token.pos)};
 Token{INLIST(kwds_LTD,Token.lemma)->MARK(tokenLTD)};
 Token{INLIST(kwds_event,Token.lemma)->MARK(tokenEvent)};
 
