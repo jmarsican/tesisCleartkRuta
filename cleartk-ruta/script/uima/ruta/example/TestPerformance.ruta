@@ -10,20 +10,26 @@ WORDLIST kwds_constraint = 'lemmas/constraints.txt';
 WORDLIST kwds_event = 'lemmas/events.txt';
 
 // define some useful annotations
-DECLARE Annotation tokenTime(STRING pos);
-DECLARE tokenLTD, tokenStart, tokenEnd, tokenConstraint, tokenEvent, performanceSentence;
+DECLARE Annotation tokenTime(STRING pos, STRING lemma);
+DECLARE Annotation tokenLTD(STRING pos, STRING lemma);
+DECLARE Annotation tokenStart(STRING pos, STRING lemma);
+DECLARE Annotation tokenEnd(STRING pos, STRING lemma);
+DECLARE Annotation tokenConstraint(STRING pos, STRING lemma);
+DECLARE Annotation tokenEvent(STRING pos, STRING lemma);
+
+DECLARE performanceSentence;
 
 //disambiguation of any word of seconds(time) or any 
 NUM Token{REGEXP(".*second[s]?", true)->Token.lemma="#time#"};
 
 //Mark perfomance tokens that matches with the list of taxonomies words
-Token{INLIST(kwds_constraint,Token.lemma) -> MARK(tokenConstraint)};
-Token{INLIST(kwds_time,Token.lemma) -> CREATE(tokenTime, "pos" = Token.pos)};
-Token{INLIST(kwds_LTD,Token.lemma) -> MARK(tokenLTD)};
-Token{INLIST(kwds_event,Token.lemma) -> MARK(tokenEvent)};
+Token{INLIST(kwds_constraint,Token.lemma) -> CREATE(tokenConstraint, "pos" = Token.pos, "lemma" = Token.lemma)};
+Token{INLIST(kwds_time,Token.lemma) -> CREATE(tokenTime, "pos" = Token.pos, "lemma" = Token.lemma)};
+Token{INLIST(kwds_LTD,Token.lemma) -> CREATE(tokenLTD, "pos" = Token.pos, "lemma" = Token.lemma)};
+Token{INLIST(kwds_event,Token.lemma) -> CREATE(tokenEvent, "pos" = Token.pos, "lemma" = Token.lemma)};
 
-Token{REGEXP("start", true) -> MARK(tokenStart)};
-Token{REGEXP("end", true) -> MARK(tokenEnd)};
+Token{REGEXP("start", true) -> CREATE(tokenStart, "pos" = Token.pos, "lemma" = Token.lemma)};
+Token{REGEXP("end", true) -> CREATE(tokenEnd, "pos" = Token.pos, "lemma" = Token.lemma)};
 
 Sentence{OR(
   AND (CONTAINS(tokenEvent), CONTAINS(tokenTime)),
