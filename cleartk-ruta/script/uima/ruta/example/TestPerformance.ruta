@@ -16,14 +16,14 @@ DECLARE Annotation TokenTime(STRING pos, STRING lemma);
 DECLARE Annotation TokenLTD(STRING pos, STRING lemma);
 DECLARE Annotation TokenStart(STRING pos, STRING lemma);
 DECLARE Annotation TokenEnd(STRING pos, STRING lemma);
-DECLARE Annotation TokenConstraint(STRING pos, STRING lemma, Annotation sentence);
+DECLARE Annotation TokenConstraint(STRING pos, STRING lemma);
 DECLARE Annotation TokenEvent(STRING pos, STRING lemma);
 
 //disambiguation of any word of seconds(time) or any 
 NUM Token{REGEXP(".*second[s]?", true)->Token.lemma="#time#"};
 
 //Mark perfomance tokens that matches with the list of taxonomies words
-Token{INLIST(kwds_constraint,Token.lemma) -> CREATE(TokenConstraint, "pos" = Token.pos, "lemma" = Token.lemma, "sentence" = 0)};
+Token{INLIST(kwds_constraint,Token.lemma) -> CREATE(TokenConstraint, "pos" = Token.pos, "lemma" = Token.lemma)};
 Token{INLIST(kwds_time,Token.lemma) -> CREATE(TokenTime, "pos" = Token.pos, "lemma" = Token.lemma)};
 Token{INLIST(kwds_LTD,Token.lemma) -> CREATE(TokenLTD, "pos" = Token.pos, "lemma" = Token.lemma)};
 Token{INLIST(kwds_event,Token.lemma) -> CREATE(TokenEvent, "pos" = Token.pos, "lemma" = Token.lemma)};
