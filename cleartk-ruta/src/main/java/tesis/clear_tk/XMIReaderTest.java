@@ -1,23 +1,17 @@
 package tesis.clear_tk;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
-
-import opennlp.uima.util.AnnotationComboIterator;
-import opennlp.uima.util.AnnotationIteratorPair;
-import opennlp.uima.util.AnnotatorUtil;
-import opennlp.uima.util.UimaUtil;
+import java.util.List;
+import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
-import org.apache.uima.fit.factory.UimaContextFactory;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -25,14 +19,21 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.ruta.engine.RutaEngine;
-import org.apache.uima.util.TypeSystemUtil;
 import org.apache.uima.util.XMLInputSource;
-import org.cleartk.ml.feature.extractor.CleartkExtractor;
-import org.cleartk.token.type.Token;
 
 import uima.ruta.example.TestPerformance.PerformanceSentence;
 import uima.ruta.example.TestPerformance.TokenConstraint;
-import uima.ruta.example.TestPerformance.TokenTime;
+
+import com.google.common.collect.Lists;
+
+import edu.stanford.nlp.ie.util.RelationTriple;
+import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.util.CoreMap;
 
 public class XMIReaderTest {
 
@@ -82,30 +83,40 @@ public class XMIReaderTest {
 			ae.reconfigure();
 			ae.process(cas);
 		}
-		Collection<TokenConstraint> tokens = JCasUtil.select(cas.getJCas(),
-				TokenConstraint.class);
-		for (TokenConstraint token : tokens) {
-			System.out.println(token.getCoveredText());
-			System.out.println(token);
+		Collection<PerformanceSentence> sentences = JCasUtil.select(cas.getJCas(),
+				PerformanceSentence.class);
+		
+		List<Annotation> annotations = new ArrayList<Annotation>();
+		for (PerformanceSentence sentence : sentences) {
+			annotations.add(new Annotation(sentence.getCoveredText()));
 		}
 		
-		UimaContext context = UimaContextFactory.createUimaContext(null);
-		
-		// sentence type
-	    Type sentenceType = AnnotatorUtil.getRequiredTypeParameter(context, cas.getTypeSystem(),
-	        UimaUtil.SENTENCE_TYPE_PARAMETER);
 
-	    // token type
-	    Type tokenType = AnnotatorUtil.getRequiredTypeParameter(context, cas.getTypeSystem(),
-	        UimaUtil.TOKEN_TYPE_PARAMETER);
-		
-		final AnnotationComboIterator comboIterator = new AnnotationComboIterator(cas,
-		        sentenceType, tokenType);
-		
-		for (AnnotationIteratorPair annotationIteratorPair : comboIterator) {
-		      System.out.println(annotationIteratorPair);
-		}
-		
+		    // Create the Stanford CoreNLP pipeline
+		    Properties props = new Properties();
+		    props.setProperty("annotators", "tokenize,ssplit,pos,lemma,depparse,natlog,openie");
+		    props.setProperty("outputFormat", "X-CAS");
+		    props.setProperty("outputExtension", "xmi");
+		    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+		    // Annotate an example document.
+		    pipeline.annotate(annotations);
+		    
+		    // Loop over sentences in the document
+		    for (Annotation annotation : annotations) {
+		    	System.out.println(annotation.toString());
+		    	for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+		    	      // Get the OpenIE triples for the sentence
+		    	      Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
+		    	      // Print the triples
+		    	      for (RelationTriple triple : triples) {
+		    	        System.out.println(triple.confidence + "\t" +
+		    	            triple.subjectLemmaGloss() + "\t\t" +
+		    	            triple.relationLemmaGloss() + "\t" +
+		    	            triple.objectLemmaGloss());
+		    	      }
+		    	    }
+			}
 	}
 
 }
