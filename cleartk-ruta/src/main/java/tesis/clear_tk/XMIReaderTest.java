@@ -33,6 +33,9 @@ import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
+import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.util.CoreMap;
 
 public class XMIReaderTest {
@@ -107,13 +110,17 @@ public class XMIReaderTest {
 		    	System.out.println(annotation.toString());
 		    	for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
 		    	      // Get the OpenIE triples for the sentence
-		    	      Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
+		    	      SemanticGraph graph = sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
 		    	      // Print the triples
-		    	      for (RelationTriple triple : triples) {
-		    	        System.out.println(triple.confidence + "\t" +
-		    	            triple.subjectLemmaGloss() + "\t\t" +
-		    	            triple.relationLemmaGloss() + "\t" +
-		    	            triple.objectLemmaGloss());
+		    	      List<SemanticGraphEdge> edges = graph.edgeListSorted();
+		    	      for (SemanticGraphEdge edge : edges) {
+		    	        System.out.println(
+		    	        		edge.getRelation().getLongName()+ ":\n" +
+		    	        		edge.getDependent()+ "<-\t" +
+		    	        		edge.getGovernor() + "\n" +
+		    	            
+		    	            edge.getSource() + "\n"+
+		    	            edge.getTarget() );
 		    	      }
 		    	    }
 			}
