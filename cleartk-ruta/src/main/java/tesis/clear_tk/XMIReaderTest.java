@@ -21,17 +21,15 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.ruta.engine.RutaEngine;
 import org.apache.uima.util.XMLInputSource;
 
+import simplenlg.features.Feature;
+import simplenlg.features.Tense;
+import simplenlg.framework.NLGFactory;
+import simplenlg.lexicon.Lexicon;
+import simplenlg.phrasespec.SPhraseSpec;
+import simplenlg.realiser.english.Realiser;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
-import uima.ruta.example.TestPerformance.TokenConstraint;
-
-import com.google.common.collect.Lists;
-
-import edu.stanford.nlp.ie.util.RelationTriple;
-import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
@@ -86,44 +84,63 @@ public class XMIReaderTest {
 			ae.reconfigure();
 			ae.process(cas);
 		}
-		Collection<PerformanceSentence> sentences = JCasUtil.select(cas.getJCas(),
-				PerformanceSentence.class);
-		
+		Collection<PerformanceSentence> sentences = JCasUtil.select(
+				cas.getJCas(), PerformanceSentence.class);
+
 		List<Annotation> annotations = new ArrayList<Annotation>();
 		for (PerformanceSentence sentence : sentences) {
 			annotations.add(new Annotation(sentence.getCoveredText()));
 		}
+
+		// Create the Stanford CoreNLP pipeline
+		Properties props = new Properties();
+		props.setProperty("annotators",
+				"tokenize,ssplit,pos,lemma,depparse,natlog,openie");
+		props.setProperty("outputFormat", "X-CAS");
+		props.setProperty("outputExtension", "xmi");
+		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+		// Annotate an example document.
+		pipeline.annotate(annotations);
+
+		List<String> verbs = new ArrayList<String>();
+		List<String> nouns = new ArrayList<String>();
 		
+		// Loop over sentences in the document
+		for (Annotation annotation : annotations) {
+			System.out.println(annotation.toString());
+			for (CoreMap sentence : annotation
+					.get(CoreAnnotations.SentencesAnnotation.class)) {
+				// Get the OpenIE triples for the sentence
+				SemanticGraph graph = sentence
+						.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
+				// Print the triples
+				List<SemanticGraphEdge> edges = graph.edgeListSorted();
+				for (SemanticGraphEdge edge : edges) {
+					if (edge.getRelation().getShortName().equals("nmod"))
+						System.out.println(edge.getRelation().getLongName()
+								+ ":\n" + edge.getDependent() + "<-\t"
+								+ edge.getGovernor() + "\n" +
 
-		    // Create the Stanford CoreNLP pipeline
-		    Properties props = new Properties();
-		    props.setProperty("annotators", "tokenize,ssplit,pos,lemma,depparse,natlog,openie");
-		    props.setProperty("outputFormat", "X-CAS");
-		    props.setProperty("outputExtension", "xmi");
-		    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-		    // Annotate an example document.
-		    pipeline.annotate(annotations);
-		    
-		    // Loop over sentences in the document
-		    for (Annotation annotation : annotations) {
-		    	System.out.println(annotation.toString());
-		    	for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
-		    	      // Get the OpenIE triples for the sentence
-		    	      SemanticGraph graph = sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
-		    	      // Print the triples
-		    	      List<SemanticGraphEdge> edges = graph.edgeListSorted();
-		    	      for (SemanticGraphEdge edge : edges) {
-		    	        System.out.println(
-		    	        		edge.getRelation().getLongName()+ ":\n" +
-		    	        		edge.getDependent()+ "<-\t" +
-		    	        		edge.getGovernor() + "\n" +
-		    	            
-		    	            edge.getSource() + "\n"+
-		    	            edge.getTarget() );
-		    	      }
-		    	    }
+								edge.getSource() + "\n" + edge.getTarget());
+				}
 			}
+		}
+
+		Lexicon lexicon = Lexicon.getDefaultLexicon();
+		NLGFactory factory = new NLGFactory(lexicon);
+		SPhraseSpec phrase = new SPhraseSpec(factory);
+		Realiser realiser = new Realiser(lexicon);
+
+		for (int i = 0; i < verbs.size(); i++) {
+			phrase.setSubject(factory.createNounPhrase("my dog"));
+			phrase.setVerb(factory.createVerbPhrase("chasing"));
+			phrase.setObject(factory.createNounPhrase("George"));
+
+			phrase.setFeature(Feature.TENSE, Tense.PRESENT);
+
+			System.out.println(realiser.realise(phrase));
+		}
 	}
 
 }
