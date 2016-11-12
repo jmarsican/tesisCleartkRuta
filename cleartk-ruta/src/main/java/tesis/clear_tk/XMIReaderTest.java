@@ -1,10 +1,16 @@
 package tesis.clear_tk;
 
 import java.io.File;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -25,10 +31,13 @@ import simplenlg.features.Feature;
 import simplenlg.features.Tense;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
+import simplenlg.phrasespec.NPPhraseSpec;
+import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
 import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -38,25 +47,45 @@ import edu.stanford.nlp.util.CoreMap;
 
 public class XMIReaderTest {
 
-	private static final String XMI_INPUT_FILE_PATH = "input/ejemplos performance.txt.xmi";
-	private static final String XMI_OUTPUT_FILE_PATH = "output/ejemplos performance.txt.xmi";
+	private static final String XMI_INPUT_DIR = "input/";
+	private static final String XMI_OUTPUT_DIR = "output/";
 
 	private static final String PERFORMANCE_ENGINE_PATH = "descriptor/uima/ruta/example/TestPerformanceEngine.xml";
 	private static final String PERFORMANCE_SCRIPT_PATH = "script/uima/ruta/example/TestPerformance.ruta";
 	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";
 
 	public static void main(String[] args) throws Exception {
+		Files.list(Paths.get(XMI_INPUT_DIR))
+        .forEach(file -> {
+        	try {
+				readXmi(file.getFileName().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+        });	
+	}
+	
+	private static IndexedWord getDependent(SemanticGraph graph, IndexedWord node, String relationShortName) {
+		Optional<IndexedWord> indexedWord = graph.getOutEdgesSorted(node).stream().filter(e -> relationShortName.equals(e.getRelation().getShortName())).findFirst().map(e -> e.getDependent());
+		return indexedWord.orElse(null);
+	}
+	
+	public static void readXmi(String fileName) throws Exception {
 
+		System.out.println("-------------------");
+		System.out.println("File: " + fileName);
+		System.out.println("-------------------");
+		
 		TypeSystemDescription tsd = TypeSystemDescriptionFactory
 				.createTypeSystemDescriptionFromPath(TYPE_SYSTEM_FILE_PATH);
 		JCas jCas = JCasFactory.createJCas(tsd);
 
 		File xmiFile = null;
-		xmiFile = new File(XMI_OUTPUT_FILE_PATH);
+		xmiFile = new File(XMI_OUTPUT_DIR + fileName);
 		boolean runRutaScript = false;
 		if (!xmiFile.exists()) {
 			runRutaScript = true;
-			xmiFile = new File(XMI_INPUT_FILE_PATH);
+			xmiFile = new File(XMI_INPUT_DIR + fileName);
 		}
 
 		CasIOUtil.readXmi(jCas, xmiFile);
@@ -102,45 +131,56 @@ public class XMIReaderTest {
 
 		// Annotate an example document.
 		pipeline.annotate(annotations);
-
-		List<String> verbs = new ArrayList<String>();
-		List<String> nouns = new ArrayList<String>();
 		
+		List<IndexedWord> verbs;
 		// Loop over sentences in the document
 		for (Annotation annotation : annotations) {
-			System.out.println(annotation.toString());
 			for (CoreMap sentence : annotation
 					.get(CoreAnnotations.SentencesAnnotation.class)) {
-				// Get the OpenIE triples for the sentence
 				SemanticGraph graph = sentence
 						.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
-				// Print the triples
 				List<SemanticGraphEdge> edges = graph.edgeListSorted();
-				for (SemanticGraphEdge edge : edges) {
-					if (edge.getRelation().getShortName().equals("nmod"))
-						System.out.println(edge.getRelation().getLongName()
-								+ ":\n" + edge.getDependent() + "<-\t"
-								+ edge.getGovernor() + "\n" +
+				
+				// Filtering nsubjpass edges 
+				edges = edges.stream().filter(edge -> 
+					"nsubjpass".equals(edge.getRelation().getShortName()))
+						.collect(Collectors.toList());
+				
+				edges.forEach(edge -> {
+					IndexedWord indexedVerb = edge.getGovernor(); 
+					IndexedWord indexedComplement = getDependent(graph, indexedVerb, "nmod");
+					IndexedWord indexedPreposition = getDependent(graph, indexedComplement, "case");
+					IndexedWord indexedDeterminer = getDependent(graph, indexedComplement, "det");
+					// TODO: use Optionals
+					String verb = indexedVerb.originalText(); // update
+					String object = edge.getDependent().originalText(); // alarm
+					String complement = indexedComplement.originalText(); // user
+					String preposition = indexedPreposition.originalText(); // on
+					String complementDeterminer = indexedDeterminer.originalText(); // the
+					
+					Lexicon lexicon = Lexicon.getDefaultLexicon();
+					NLGFactory factory = new NLGFactory(lexicon);
+					SPhraseSpec phrase = new SPhraseSpec(factory);
+					Realiser realiser = new Realiser(lexicon);
+					
+					NPPhraseSpec nlpComplement = factory.createNounPhrase(complement);
+					nlpComplement.setDeterminer(complementDeterminer);
+					PPPhraseSpec nlpModifier = factory.createPrepositionPhrase();
+					nlpModifier.setPreposition(preposition);
+					nlpModifier.setComplement(nlpComplement);
+					
+					phrase.setVerb(factory.createVerbPhrase(verb));
+					phrase.setObject(factory.createNounPhrase(object));
+					phrase.addModifier(nlpModifier);
 
-								edge.getSource() + "\n" + edge.getTarget());
-				}
+					phrase.setFeature(Feature.TENSE, Tense.PRESENT);
+
+					System.out.println(realiser.realise(phrase));					
+				});
+				 
 			}
 		}
 
-		Lexicon lexicon = Lexicon.getDefaultLexicon();
-		NLGFactory factory = new NLGFactory(lexicon);
-		SPhraseSpec phrase = new SPhraseSpec(factory);
-		Realiser realiser = new Realiser(lexicon);
-
-		for (int i = 0; i < verbs.size(); i++) {
-			phrase.setSubject(factory.createNounPhrase("my dog"));
-			phrase.setVerb(factory.createVerbPhrase("chasing"));
-			phrase.setObject(factory.createNounPhrase("George"));
-
-			phrase.setFeature(Feature.TENSE, Tense.PRESENT);
-
-			System.out.println(realiser.realise(phrase));
-		}
 	}
 
 }
