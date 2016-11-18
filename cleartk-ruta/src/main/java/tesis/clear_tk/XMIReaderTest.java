@@ -1,9 +1,7 @@
 package tesis.clear_tk;
 
 import java.io.File;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +35,7 @@ import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
 import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -53,6 +52,8 @@ public class XMIReaderTest {
 	private static final String PERFORMANCE_ENGINE_PATH = "descriptor/uima/ruta/example/TestPerformanceEngine.xml";
 	private static final String PERFORMANCE_SCRIPT_PATH = "script/uima/ruta/example/TestPerformance.ruta";
 	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";
+	
+	private static final IndexedWord EMPTY_INDEXED_WORD = new IndexedWord(new CoreLabel());
 
 	public static void main(String[] args) throws Exception {
 		Files.list(Paths.get(XMI_INPUT_DIR))
@@ -66,8 +67,11 @@ public class XMIReaderTest {
 	}
 	
 	private static IndexedWord getDependent(SemanticGraph graph, IndexedWord node, String relationShortName) {
-		Optional<IndexedWord> indexedWord = graph.getOutEdgesSorted(node).stream().filter(e -> relationShortName.equals(e.getRelation().getShortName())).findFirst().map(e -> e.getDependent());
-		return indexedWord.orElse(null);
+		Optional<IndexedWord> indexedWord = 
+				graph.getOutEdgesSorted(node).stream()
+				.filter(e -> relationShortName.equals(e.getRelation().getShortName()))
+				.findFirst().map(e -> e.getDependent());
+		return indexedWord.orElse(EMPTY_INDEXED_WORD);
 	}
 	
 	public static void readXmi(String fileName) throws Exception {
@@ -132,7 +136,6 @@ public class XMIReaderTest {
 		// Annotate an example document.
 		pipeline.annotate(annotations);
 		
-		List<IndexedWord> verbs;
 		// Loop over sentences in the document
 		for (Annotation annotation : annotations) {
 			for (CoreMap sentence : annotation
@@ -151,7 +154,7 @@ public class XMIReaderTest {
 					IndexedWord indexedComplement = getDependent(graph, indexedVerb, "nmod");
 					IndexedWord indexedPreposition = getDependent(graph, indexedComplement, "case");
 					IndexedWord indexedDeterminer = getDependent(graph, indexedComplement, "det");
-					// TODO: use Optionals
+					
 					String verb = indexedVerb.originalText(); // update
 					String object = edge.getDependent().originalText(); // alarm
 					String complement = indexedComplement.originalText(); // user
