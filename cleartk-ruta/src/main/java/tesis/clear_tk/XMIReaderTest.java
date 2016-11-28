@@ -156,7 +156,7 @@ public class XMIReaderTest {
 					System.out.println(realiser.realise(phrase));					
 				});
 				 
-			}
+			} 
 		}
 
 	}
