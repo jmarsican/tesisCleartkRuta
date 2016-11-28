@@ -8,26 +8,16 @@ import simplenlg.framework.NLGFactory;
 import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
-public class NounModExtractor implements IPhraseExtractor {
+public class NounModExtractor extends PhraseExtractor {
 	
-	private static final IndexedWord EMPTY_INDEXED_WORD = new IndexedWord("",0,0);
 	private NLGFactory mFactory;
 	
 	public NounModExtractor(NLGFactory nlgFactory) {
 		mFactory = nlgFactory;
-	}
-	
-	private IndexedWord getDependent(SemanticGraph graph, IndexedWord node, String relationShortName) {
-		Optional<IndexedWord> indexedWord = 
-				graph.getOutEdgesSorted(node).stream()
-				.filter(e -> relationShortName.equals(e.getRelation().getShortName()))
-				.findFirst().map(e -> e.getDependent());
-		return indexedWord.orElse(EMPTY_INDEXED_WORD);
 	}
 
 	@Override

@@ -33,7 +33,7 @@ import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
-import tesis.extractors.IPhraseExtractor;
+import tesis.extractors.PhraseExtractor;
 import tesis.extractors.NounModExtractor;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -131,7 +131,7 @@ public class XMIReaderTest {
 		
 		Lexicon lexicon = Lexicon.getDefaultLexicon();
 		NLGFactory factory = new NLGFactory(lexicon);
-		IPhraseExtractor extractor = new NounModExtractor(factory);
+		PhraseExtractor extractor = new NounModExtractor(factory);
 		
 		Realiser realiser = new Realiser(lexicon);
 		
