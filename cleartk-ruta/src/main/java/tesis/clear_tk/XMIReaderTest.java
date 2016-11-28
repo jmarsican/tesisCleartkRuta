@@ -33,6 +33,8 @@ import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
+import tesis.extractors.IPhraseExtractor;
+import tesis.extractors.NounModExtractor;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -51,9 +53,7 @@ public class XMIReaderTest {
 
 	private static final String PERFORMANCE_ENGINE_PATH = "descriptor/uima/ruta/example/TestPerformanceEngine.xml";
 	private static final String PERFORMANCE_SCRIPT_PATH = "script/uima/ruta/example/TestPerformance.ruta";
-	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";
-	
-	private static final IndexedWord EMPTY_INDEXED_WORD = new IndexedWord(new CoreLabel());
+	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";	
 
 	public static void main(String[] args) throws Exception {
 		Files.list(Paths.get(XMI_INPUT_DIR))
@@ -65,14 +65,7 @@ public class XMIReaderTest {
 			}	
         });	
 	}
-	
-	private static IndexedWord getDependent(SemanticGraph graph, IndexedWord node, String relationShortName) {
-		Optional<IndexedWord> indexedWord = 
-				graph.getOutEdgesSorted(node).stream()
-				.filter(e -> relationShortName.equals(e.getRelation().getShortName()))
-				.findFirst().map(e -> e.getDependent());
-		return indexedWord.orElse(EMPTY_INDEXED_WORD);
-	}
+
 	
 	public static void readXmi(String fileName) throws Exception {
 
@@ -136,10 +129,18 @@ public class XMIReaderTest {
 		// Annotate an example document.
 		pipeline.annotate(annotations);
 		
+		Lexicon lexicon = Lexicon.getDefaultLexicon();
+		NLGFactory factory = new NLGFactory(lexicon);
+		IPhraseExtractor extractor = new NounModExtractor(factory);
+		
+		Realiser realiser = new Realiser(lexicon);
+		
 		// Loop over sentences in the document
 		for (Annotation annotation : annotations) {
 			for (CoreMap sentence : annotation
 					.get(CoreAnnotations.SentencesAnnotation.class)) {
+				
+				
 				SemanticGraph graph = sentence
 						.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
 				List<SemanticGraphEdge> edges = graph.edgeListSorted();
@@ -150,33 +151,7 @@ public class XMIReaderTest {
 						.collect(Collectors.toList());
 				
 				edges.forEach(edge -> {
-					IndexedWord indexedVerb = edge.getGovernor(); 
-					IndexedWord indexedComplement = getDependent(graph, indexedVerb, "nmod");
-					IndexedWord indexedPreposition = getDependent(graph, indexedComplement, "case");
-					IndexedWord indexedDeterminer = getDependent(graph, indexedComplement, "det");
-					
-					String verb = indexedVerb.originalText(); // update
-					String object = edge.getDependent().originalText(); // alarm
-					String complement = indexedComplement.originalText(); // user
-					String preposition = indexedPreposition.originalText(); // on
-					String complementDeterminer = indexedDeterminer.originalText(); // the
-					
-					Lexicon lexicon = Lexicon.getDefaultLexicon();
-					NLGFactory factory = new NLGFactory(lexicon);
-					SPhraseSpec phrase = new SPhraseSpec(factory);
-					Realiser realiser = new Realiser(lexicon);
-					
-					NPPhraseSpec nlpComplement = factory.createNounPhrase(complement);
-					nlpComplement.setDeterminer(complementDeterminer);
-					PPPhraseSpec nlpModifier = factory.createPrepositionPhrase();
-					nlpModifier.setPreposition(preposition);
-					nlpModifier.setComplement(nlpComplement);
-					
-					phrase.setVerb(factory.createVerbPhrase(verb));
-					phrase.setObject(factory.createNounPhrase(object));
-					phrase.addModifier(nlpModifier);
-
-					phrase.setFeature(Feature.TENSE, Tense.PRESENT);
+					SPhraseSpec phrase = extractor.assemble(graph, edge);
 
 					System.out.println(realiser.realise(phrase));					
 				});
