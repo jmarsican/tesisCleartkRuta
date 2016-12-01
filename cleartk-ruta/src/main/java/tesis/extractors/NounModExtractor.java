@@ -1,11 +1,8 @@
 package tesis.extractors;
 
-import java.util.stream.Stream;
-
 import simplenlg.features.Feature;
 import simplenlg.features.Tense;
 import simplenlg.framework.NLGFactory;
-import simplenlg.framework.PhraseElement;
 import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
@@ -14,29 +11,12 @@ import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
-public class NounModExtractor implements IPhraseExtractor {
+public class NounModExtractor extends PhraseExtractor {
 	
-	private static final IndexedWord EMPTY_INDEXED_WORD = new IndexedWord("",0,0);
 	private NLGFactory mFactory;
 	
 	public NounModExtractor(NLGFactory nlgFactory) {
 		mFactory = nlgFactory;
-	}
-	
-	private Stream<SemanticGraphEdge> getOutEdgesSorted(SemanticGraph graph, IndexedWord node, String relationShortName){
-		return graph.getOutEdgesSorted(node).stream()
-				.filter(e -> relationShortName.equals(e.getRelation().getShortName()));
-	}
-	
-	private IndexedWord getDependent(SemanticGraph graph, IndexedWord node, String relationShortName) {
-		return getOutEdgesSorted(graph, node, relationShortName).findFirst()
-				.map(e -> e.getDependent())
-				.orElse(EMPTY_INDEXED_WORD);
-	}
-	
-	private void addCompounds(SemanticGraph graph, IndexedWord node, PhraseElement phrase) {
-		getOutEdgesSorted(graph, node, "compound")
-			.forEach(edge -> phrase.addPreModifier(edge.getDependent().originalText()));
 	}
 	
 	@Override
