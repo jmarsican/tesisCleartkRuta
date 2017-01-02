@@ -9,7 +9,6 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class DirectObjectExtractor extends PhraseExtractor {
 	
-	private NLGFactory mFactory;
 	
 	public DirectObjectExtractor(NLGFactory factory) {
 		mFactory = factory;
@@ -22,10 +21,10 @@ public class DirectObjectExtractor extends PhraseExtractor {
 		IndexedWord indexedModifier = getDependent(graph, indexedObject, "amod");
 		IndexedWord indexedDeterminer = getDependent(graph, indexedObject, "det");
 		
-		String verb = indexedVerb.originalText(); // update
-		String object = indexedObject.originalText(); // user
+		String verb = indexedVerb.originalText();
+		String object = indexedObject.originalText();
 		String modifier = indexedModifier.originalText(); 
-		String determiner = indexedDeterminer.originalText(); // the
+		String determiner = indexedDeterminer.originalText();
 		
 		SPhraseSpec phrase = new SPhraseSpec(mFactory);
 		
@@ -39,4 +38,9 @@ public class DirectObjectExtractor extends PhraseExtractor {
 		return phrase;
 	}
 
+	@Override
+	public String getEdgeRelationShortName() {
+		return "dobj";
+	}
+	
 }

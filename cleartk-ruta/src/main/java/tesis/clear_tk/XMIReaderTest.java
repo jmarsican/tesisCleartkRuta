@@ -28,11 +28,15 @@ import org.apache.uima.util.XMLInputSource;
 import simplenlg.features.Feature;
 import simplenlg.features.Tense;
 import simplenlg.framework.NLGFactory;
+import simplenlg.framework.PhraseElement;
 import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
+import tesis.extractors.ExtractorsManager;
+import tesis.extractors.NominalSubjectExtractor;
+import tesis.extractors.NominalSubjectPassiveExtractor;
 import tesis.extractors.PhraseExtractor;
 import tesis.extractors.NounModExtractor;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
@@ -53,26 +57,24 @@ public class XMIReaderTest {
 
 	private static final String PERFORMANCE_ENGINE_PATH = "descriptor/uima/ruta/example/TestPerformanceEngine.xml";
 	private static final String PERFORMANCE_SCRIPT_PATH = "script/uima/ruta/example/TestPerformance.ruta";
-	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";	
+	private static final String TYPE_SYSTEM_FILE_PATH = "descriptor/uima/ruta/example/TestPerformanceTypeSystem.xml";
 
 	public static void main(String[] args) throws Exception {
-		Files.list(Paths.get(XMI_INPUT_DIR))
-        .forEach(file -> {
-        	try {
+		Files.list(Paths.get(XMI_INPUT_DIR)).forEach(file -> {
+			try {
 				readXmi(file.getFileName().toString());
 			} catch (Exception e) {
 				e.printStackTrace();
-			}	
-        });	
+			}
+		});
 	}
 
-	
 	public static void readXmi(String fileName) throws Exception {
 
 		System.out.println("-------------------");
 		System.out.println("File: " + fileName);
 		System.out.println("-------------------");
-		
+
 		TypeSystemDescription tsd = TypeSystemDescriptionFactory
 				.createTypeSystemDescriptionFromPath(TYPE_SYSTEM_FILE_PATH);
 		JCas jCas = JCasFactory.createJCas(tsd);
@@ -128,35 +130,49 @@ public class XMIReaderTest {
 
 		// Annotate an example document.
 		pipeline.annotate(annotations);
-		
+
 		Lexicon lexicon = Lexicon.getDefaultLexicon();
 		NLGFactory factory = new NLGFactory(lexicon);
-		PhraseExtractor extractor = new NounModExtractor(factory);
-		
+
 		Realiser realiser = new Realiser(lexicon);
-		
+
 		// Loop over sentences in the document
 		for (Annotation annotation : annotations) {
 			for (CoreMap sentence : annotation
 					.get(CoreAnnotations.SentencesAnnotation.class)) {
-				
-				
+
 				SemanticGraph graph = sentence
 						.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
 				List<SemanticGraphEdge> edges = graph.edgeListSorted();
-				
-				// Filtering nsubjpass edges 
-				edges = edges.stream().filter(edge -> 
-					"nsubjpass".equals(edge.getRelation().getShortName()))
-						.collect(Collectors.toList());
-				
-				edges.forEach(edge -> {
-					SPhraseSpec phrase = extractor.assemble(graph, edge);
 
-					System.out.println(realiser.realise(phrase));					
+				ExtractorsManager extractorsManager = new ExtractorsManager(factory);
+
+				// Filtering edges
+				List<SemanticGraphEdge> filteredEdges = edges
+						.stream()
+						.filter(edge -> edge.getRelation().getShortName()
+								.equals("nsubj")
+								|| edge.getRelation().getShortName()
+										.equals("nsubj"))
+						.collect(Collectors.toList());
+
+				filteredEdges.forEach(edge -> {
+
+					filteredEdges.forEach(filteredEdge -> {
+						PhraseExtractor extractor = extractorsManager
+								.getExtractor(filteredEdge.getRelation()
+										.getShortName());
+
+						if (extractor != null) {
+							PhraseElement phrase = new NominalSubjectExtractor(
+									factory).assemble(graph, edge);
+							phrase = extractor.assemble(graph, filteredEdge);
+							System.out.println(realiser.realise(phrase));
+						}
+					});
 				});
-				 
-			} 
+
+			}
 		}
 
 	}
