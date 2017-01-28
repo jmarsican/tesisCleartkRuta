@@ -4,7 +4,6 @@ bin
 /cleartk-ruta/.buildpath
 /cleartk-ruta/input/
 /cleartk-ruta/output/
-/cleartk-ruta/descriptor/uima/ruta/
 /cleartk-ruta/target/
-/cleartk-ruta/descriptor/utils/
+/cleartk-ruta/descriptor/
 /cleartk-ruta/resources/lemmas/
