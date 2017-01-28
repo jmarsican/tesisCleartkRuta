@@ -8,3 +8,5 @@ calculations
 complete
 sampling
 deliver
+detect
+display
