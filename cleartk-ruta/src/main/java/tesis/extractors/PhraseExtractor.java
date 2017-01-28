@@ -2,6 +2,8 @@ package tesis.extractors;
 
 import java.util.stream.Stream;
 
+import org.apache.log4j.Logger;
+
 import simplenlg.framework.NLGFactory;
 import simplenlg.framework.PhraseElement;
 import edu.stanford.nlp.ling.IndexedWord;
@@ -14,7 +16,13 @@ public abstract class PhraseExtractor {
 
 	protected NLGFactory mFactory;
 	
-	public abstract PhraseElement assemble(SemanticGraph graph, SemanticGraphEdge edge);
+	public PhraseElement assemble(SemanticGraph graph, SemanticGraphEdge edge) {
+		Logger logger = Logger.getLogger(this.getClass());
+		logger.debug(String.format("Assemble '%s' relation.", this.getEdgeRelationShortName()));
+		return doAssemble(graph, edge);
+	}
+	
+	protected abstract PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge);
 
 	public abstract String getEdgeRelationShortName();
 	
