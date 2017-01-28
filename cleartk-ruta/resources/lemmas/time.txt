@@ -1,7 +1,0 @@
-time
-within
-less
-#time#
-#ord#
-minute
-hour
