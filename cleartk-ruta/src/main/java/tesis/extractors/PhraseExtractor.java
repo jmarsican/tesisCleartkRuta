@@ -1,23 +1,46 @@
 package tesis.extractors;
 
-import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.apache.log4j.Logger;
+
+import simplenlg.framework.NLGFactory;
+import simplenlg.framework.PhraseElement;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
-import simplenlg.phrasespec.SPhraseSpec;
 
 public abstract class PhraseExtractor {
+
+	protected static final IndexedWord EMPTY_INDEXED_WORD = new IndexedWord("",0,0);
+
+	protected NLGFactory mFactory;
 	
-	private static final IndexedWord EMPTY_INDEXED_WORD = new IndexedWord("",0,0);
+	public PhraseElement assemble(SemanticGraph graph, SemanticGraphEdge edge) {
+		Logger logger = Logger.getLogger(this.getClass());
+		logger.debug(String.format("Assemble '%s' relation.", this.getEdgeRelationShortName()));
+		return doAssemble(graph, edge);
+	}
 	
-	public abstract SPhraseSpec assemble(SemanticGraph graph, SemanticGraphEdge edge);
+	protected abstract PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge);
+
+	public abstract String getEdgeRelationShortName();
+	
+	private Stream<SemanticGraphEdge> getOutEdgesSorted(SemanticGraph graph, IndexedWord node, String relationShortName){
+		return graph.getOutEdgesSorted(node).stream()
+				.filter(e -> relationShortName.equals(e.getRelation().getShortName()));
+	}
 	
 	protected IndexedWord getDependent(SemanticGraph graph, IndexedWord node, String relationShortName) {
-		Optional<IndexedWord> indexedWord = 
-				graph.getOutEdgesSorted(node).stream()
-				.filter(e -> relationShortName.equals(e.getRelation().getShortName()))
-				.findFirst().map(e -> e.getDependent());
-		return indexedWord.orElse(EMPTY_INDEXED_WORD);
+		return getOutEdgesSorted(graph, node, relationShortName).findFirst()
+				.map(e -> e.getDependent())
+				.orElse(EMPTY_INDEXED_WORD);
+	}
+	
+	protected void addCompounds(SemanticGraph graph, IndexedWord node, PhraseElement phrase) {
+		PhraseElement modifier = mFactory.createNounPhrase();
+		getOutEdgesSorted(graph, node, "compound")
+			.forEach(edge -> modifier.addComplement(edge.getDependent().originalText()));
+		phrase.addPreModifier(modifier);
 	}
 }

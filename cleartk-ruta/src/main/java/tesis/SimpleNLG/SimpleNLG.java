@@ -18,6 +18,8 @@ public class SimpleNLG {
 		SPhraseSpec phrase = new SPhraseSpec(factory);
 		Realiser realiser = new Realiser(lexicon);
 		
+		NPPhraseSpec subject = factory.createNounPhrase("Mary");
+		
 		NPPhraseSpec complement = factory.createNounPhrase("user");
 		complement.setDeterminer("the");
 		PPPhraseSpec prepPhrase = factory.createPrepositionPhrase();
@@ -25,12 +27,12 @@ public class SimpleNLG {
 		prepPhrase.setComplement(complement);
 				
 		VPPhraseSpec verb = factory.createVerbPhrase("display");
+		phrase.setSubject(subject);
 		phrase.setVerb(verb);
 		phrase.setObject(factory.createNounPhrase("the alarm"));
 		phrase.addModifier(prepPhrase);
 		
 		
-		phrase.setFeature(Feature.TENSE, Tense.FUTURE);
 		verb.setFeature(Feature.NEGATED, true);
 		
 		
