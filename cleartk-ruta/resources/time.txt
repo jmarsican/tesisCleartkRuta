@@ -1,7 +1,6 @@
 TIME
 within
 less
-time
-second
+#time#
 minute
 hour

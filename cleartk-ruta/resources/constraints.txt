@@ -3,7 +3,6 @@ accuracy
 respond
 response
 responsiveness
-latency
 criticality
 demand
 exceed

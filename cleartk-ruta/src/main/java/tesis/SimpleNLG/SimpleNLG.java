@@ -4,7 +4,10 @@ import simplenlg.features.Feature;
 import simplenlg.features.Tense;
 import simplenlg.framework.NLGFactory;
 import simplenlg.lexicon.Lexicon;
+import simplenlg.phrasespec.NPPhraseSpec;
+import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
+import simplenlg.phrasespec.VPPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 
 public class SimpleNLG {
@@ -14,12 +17,24 @@ public class SimpleNLG {
 		NLGFactory factory = new NLGFactory(lexicon);
 		SPhraseSpec phrase = new SPhraseSpec(factory);
 		Realiser realiser = new Realiser(lexicon);
-
-		phrase.setSubject(factory.createNounPhrase("my dog"));
-		phrase.setVerb(factory.createVerbPhrase("chasing"));
-		phrase.setObject(factory.createNounPhrase("George"));
 		
-		phrase.setFeature(Feature.TENSE, Tense.PRESENT);
+		NPPhraseSpec subject = factory.createNounPhrase("Mary");
+		
+		NPPhraseSpec complement = factory.createNounPhrase("user");
+		complement.setDeterminer("the");
+		PPPhraseSpec prepPhrase = factory.createPrepositionPhrase();
+		prepPhrase.setPreposition("on");
+		prepPhrase.setComplement(complement);
+				
+		VPPhraseSpec verb = factory.createVerbPhrase("display");
+		phrase.setSubject(subject);
+		phrase.setVerb(verb);
+		phrase.setObject(factory.createNounPhrase("the alarm"));
+		phrase.addModifier(prepPhrase);
+		
+		
+		verb.setFeature(Feature.NEGATED, true);
+		
 		
 		System.out.println(realiser.realise(phrase));
 	}

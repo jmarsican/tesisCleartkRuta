@@ -1,7 +1,7 @@
 PACKAGE uima.ruta.example;
 
 // import the types of this type system:
-TYPESYSTEM org.cleartk.TypeSystem;
+TYPESYSTEM org.cleartk.token.TypeSystem;
 
 // define and import an external dictionary containing first names
 WORDLIST kwds_time = 'lemmas/time.txt';
