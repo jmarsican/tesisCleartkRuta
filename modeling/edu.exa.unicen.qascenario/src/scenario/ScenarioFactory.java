@@ -13,39 +13,48 @@ import org.eclipse.emf.ecore.EFactory;
  * @generated
  */
 public interface ScenarioFactory extends EFactory {
-	/**
-	 * The singleton instance of the factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	ScenarioFactory eINSTANCE = scenario.impl.ScenarioFactoryImpl.init();
+  /**
+   * The singleton instance of the factory.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  ScenarioFactory eINSTANCE = scenario.impl.ScenarioFactoryImpl.init();
 
-	/**
-	 * Returns a new object of class '<em>General Scenario</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>General Scenario</em>'.
-	 * @generated
-	 */
-	GeneralScenario createGeneralScenario();
+  /**
+   * Returns a new object of class '<em>General Scenario</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>General Scenario</em>'.
+   * @generated
+   */
+  GeneralScenario createGeneralScenario();
 
-	/**
-	 * Returns a new object of class '<em>Specific Scenario</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Specific Scenario</em>'.
-	 * @generated
-	 */
-	SpecificScenario createSpecificScenario();
+  /**
+   * Returns a new object of class '<em>Specific Scenario</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Specific Scenario</em>'.
+   * @generated
+   */
+  SpecificScenario createSpecificScenario();
 
-	/**
-	 * Returns the package supported by this factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the package supported by this factory.
-	 * @generated
-	 */
-	ScenarioPackage getScenarioPackage();
+  /**
+   * Returns a new object of class '<em>Phrase</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Phrase</em>'.
+   * @generated
+   */
+  Phrase createPhrase();
+
+  /**
+   * Returns the package supported by this factory.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the package supported by this factory.
+   * @generated
+   */
+  ScenarioPackage getScenarioPackage();
 
 } //ScenarioFactory

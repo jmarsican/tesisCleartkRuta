@@ -1,8 +1,8 @@
-LATENCY
-THROUGHPUT
-DEMAND
+latency
+throughput
+demand
 interval
-before 
+before
 after
 between
 start
@@ -13,3 +13,4 @@ frequency
 stream
 arrival
 rate
+period

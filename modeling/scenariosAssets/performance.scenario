@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <edu.exa.unicen.scenario:GeneralScenario xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.exa.unicen.scenario="http://edu/exa/unicen/scenario" qualityAttribute="Performance">
-  <source>One number of independent sources, possibly from within system</source>
-  <stimulus>Periodic events arrive</stimulus>
-  <stimulus>Sporadic events arrive</stimulus>
-  <stimulus>Stochastic events arrive</stimulus>
-  <environment>Normal mode</environment>
-  <environment>Overload mode</environment>
-  <artifact>System</artifact>
-  <artifact>new measure</artifact>
-  <response>Processes stimuli</response>
-  <response>Changes level of service</response>
-  <measure>Latency</measure>
-  <measure>Deadline</measure>
-  <measure>Throughput</measure>
-  <measure>Jitter</measure>
-  <measure>Miss rate</measure>
-  <measure>Data loss</measure>
+  <source begin="0" end="100" file="asd.txt">One number of independent sources, possibly from within system</source>
+  <stimulus begin="0" end="100" file="asd.txt">Periodic events arrive</stimulus>
+  <stimulus begin="0" end="100" file="asd.txt">Stochastic events arrive</stimulus>
+  <environment begin="0" end="100" file="asd.txt">Normal mode</environment>
+  <measure begin="0" end="100" file="asd.txt">Miss rate</measure>
+  <measure begin="0" end="100" file="asd.txt">Data loss</measure>
+  <environment begin="0" end="100" file="asd.txt">Overload mode</environment>
+  <artifact begin="0" end="100" file="asd.txt">System</artifact>
+  <artifact begin="0" end="100" file="asd.txt">new measure</artifact>
+  <response begin="0" end="100" file="asd.txt">Processes stimuli</response>
+  <response begin="0" end="100" file="asd.txt">Changes level of service</response>
+  <measure begin="0" end="100" file="asd.txt">Latency</measure>
+  <measure begin="0" end="100" file="asd.txt">Deadline</measure>
+  <measure begin="0" end="100" file="asd.txt">Throughput</measure>
+  <measure begin="0" end="100" file="asd.txt">Jitter</measure>
+  <stimulus begin="0" end="100" file="asd.txt">Sporadic events arrive</stimulus>
 </edu.exa.unicen.scenario:GeneralScenario>

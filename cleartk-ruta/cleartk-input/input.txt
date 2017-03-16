@@ -1,0 +1,1 @@
+The system shall access to the legacy course catalog database with no more than a 10 second latency

@@ -1,4 +1,4 @@
-CONSTRAINTS
+constraint
 accuracy
 respond
 response
@@ -10,4 +10,4 @@ precedence
 deadline
 simultaneous
 overload
-must 
+must

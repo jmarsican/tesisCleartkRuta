@@ -1,4 +1,4 @@
-TIME
+time
 within
 less
 #time#

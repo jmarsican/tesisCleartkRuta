@@ -3,20 +3,21 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="scenario" nsURI="http://edu/exa/unicen/scenario" nsPrefix="edu.exa.unicen.scenario">
   <eClassifiers xsi:type="ecore:EClass" name="GeneralScenario">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualityAttribute" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stimulus" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="environment" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="artifact" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="response" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="measure" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1"
+        eType="#//Phrase"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stimulus" upperBound="-1"
+        eType="#//Phrase"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="environment" upperBound="-1"
+        eType="#//Phrase"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifact" upperBound="-1"
+        eType="#//Phrase"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="response" upperBound="-1"
+        eType="#//Phrase"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="measure" upperBound="-1"
+        eType="#//Phrase"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="generatedScenarios" upperBound="-1"
         eType="#//SpecificScenario" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentLocation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpecificScenario">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -26,5 +27,18 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="response" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="measure" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualityAttribute" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Phrase">
+    <eOperations name="toString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return this.getValue();"/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="begin" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="end" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1"/>
   </eClassifiers>
 </ecore:EPackage>

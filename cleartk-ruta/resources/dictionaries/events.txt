@@ -1,10 +1,10 @@
-EVENTS
+event
 transaction
-interrupts
-updates
+interrupt
+update
 arrive
 process
-calculations
+calculation
 complete
 sampling
 deliver

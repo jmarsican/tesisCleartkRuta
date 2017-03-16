@@ -71,6 +71,11 @@
 		    <artifactId>log4j</artifactId>
 		    <version>1.2.17</version>
 		</dependency>
+		<dependency>
+		    <groupId>info.debatty</groupId>
+		    <artifactId>java-string-similarity</artifactId>
+		    <version>0.10</version>
+		</dependency>
 				
 	</dependencies>
 
@@ -78,7 +83,7 @@
   <build>
     <resources>
       <resource>
-        <directory>resources/config</directory>
+        <directory>config</directory>
       </resource>
     </resources>
   
