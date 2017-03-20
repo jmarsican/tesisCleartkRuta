@@ -1,0 +1,8 @@
+-Navy software engineers using the A-7E as a demonstration project for their ideas (see the sidebar  About the A-7 Project ). The qualities 
+ -that the software system was expected to have included real-time performance and modifiability for expected changes. Specifically, the 
+ -performance requirements were stated in terms of updates per second of the A7-E's displays and weapon delivery calculations. 
+ -
+ -The system shall process sensor input within one second.
+ -
+ -The time since event to message visualization is less than 5 seconds.
+ -When a user leaves the system, the administrator detects within 3 seconds.

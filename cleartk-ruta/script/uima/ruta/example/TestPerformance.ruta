@@ -35,7 +35,7 @@ Token{REGEXP("start", true) -> CREATE(TokenStart, "pos" = Token.pos, "lemma" = T
 Token{REGEXP("end", true) -> CREATE(TokenEnd, "pos" = Token.pos, "lemma" = Token.lemma)};
 
 Sentence{OR(
-  CONTAINS(TokenPerformance),
+//  CONTAINS(TokenPerformance),
   AND (CONTAINS(TokenEvent), CONTAINS(TokenTime)),
   AND (CONTAINS(TokenEvent), CONTAINS(TokenConstraint)),
   AND (CONTAINS(TokenEvent), CONTAINS(TokenLTD)),

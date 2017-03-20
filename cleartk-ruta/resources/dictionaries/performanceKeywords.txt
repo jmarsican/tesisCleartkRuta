@@ -6,6 +6,5 @@ hour
 deadline
 transaction
 update
-display
 period
 time

@@ -61,10 +61,10 @@ public class XMIReaderTest {
 
   private static Logger LOGGER = Logger.getLogger(XMIReaderTest.class);
 
-  private static final String INPUT_DIR = "cleartk-input/";
-  private static final String XMI_INPUT_DIR = "input/";
-  private static final String XMI_OUTPUT_DIR = "output/";
-  private static final String SCENARIO_OUTPUT_PATH = "output/model/%s.scenario";
+  private static final String INPUT_DIR = "plaintext-input/";
+  private static final String XMI_INPUT_DIR = "annotated-docs/";
+  private static final String XMI_OUTPUT_DIR = "qa-sentences/";
+  private static final String SCENARIO_OUTPUT_PATH = "scenarios/%s.scenario";
 
   private static final String PERFORMANCE_ENGINE_PATH =
       "descriptor/uima/ruta/example/TestPerformanceEngine.xml";
