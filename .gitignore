@@ -7,3 +7,11 @@ bin
 /cleartk-ruta/descriptor/uima/
 /cleartk-ruta/target/
 /cleartk-ruta/resources/lemmas/
+/cleartk-ruta/src/main/java/org/
+/cleartk-ruta/src/main/java/uima/
+/cleartk-ruta/descriptor/
+/modeling/edu.exa.unicen.qascenario.edit/target/
+/modeling/edu.exa.unicen.qascenario.editor/target/
+/modeling/edu.exa.unicen.qascenario.ui/target/
+/modeling/edu.exa.unicen.qascenario/target/
+
