@@ -1,6 +1,5 @@
 package tesis.extractors;
 
-import simplenlg.framework.NLGFactory;
 import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.PPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
@@ -10,8 +9,9 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class NounModExtractor extends PhraseExtractor {
 
-	public NounModExtractor(NLGFactory nlgFactory) {
-		mFactory = nlgFactory;
+	public NounModExtractor(int section) {
+		super(section);
+		RELATION_SHORT_NAME = "nmod";
 	}
 
 	@Override
