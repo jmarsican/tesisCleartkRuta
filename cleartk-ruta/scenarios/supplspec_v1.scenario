@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.exa.unicen.scenario="http://edu/exa/unicen/scenario">
+  <edu.exa.unicen.scenario:GeneralScenario qualityAttribute="Performance" source="/1 /2 /3 /4 /5 /6 /7" stimulus="/1 /2 /3 /4 /5 /6 /7" environment="/1 /2 /3 /4 /5 /6 /7" artifact="/1 /2 /3 /4 /5 /6 /7" response="/1 /2 /3 /4 /5 /6 /7" measure="/1 /2 /3 /4 /5 /6 /7" documentLocation="/home/andres/projects/tesisCleartkRuta/cleartk-ruta/plaintext-input/supplspec_v1.htm.txt"/>
+  <edu.exa.unicen.scenario:Phrase value="includes a description" begin="2629" end="2824"/>
+  <edu.exa.unicen.scenario:Phrase value="detects the condition" begin="2629" end="2824"/>
+  <edu.exa.unicen.scenario:Phrase value="exceeds hour" begin="3951" end="4041"/>
+  <edu.exa.unicen.scenario:Phrase value="supports to user" begin="4142" end="4346"/>
+  <edu.exa.unicen.scenario:Phrase value="provides access" begin="4348" end="4493"/>
+  <edu.exa.unicen.scenario:Phrase value="Responses Time" begin="4495" end="4612"/>
+  <edu.exa.unicen.scenario:Phrase value="completes %" begin="4495" end="4612"/>
+</xmi:XMI>

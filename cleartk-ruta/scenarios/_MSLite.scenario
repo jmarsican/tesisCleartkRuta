@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.exa.unicen.scenario="http://edu/exa/unicen/scenario">
+  <edu.exa.unicen.scenario:GeneralScenario qualityAttribute="Performance" source="/1 /2 /3 /4 /5 /6 /7 /8 /9 /10 /11 /12 /13 /14 /15 /16 /17 /18 /19 /20 /21 /22 /23 /24 /25 /26" stimulus="/1 /2 /3 /4 /5 /6 /7 /8 /9 /10 /11 /12 /13 /14 /15 /16 /17 /18 /19 /20 /21 /22 /23 /24 /25 /26" environment="/1 /2 /3 /4 /5 /6 /7 /8 /9 /10 /11 /12 /13 /14 /15 /16 /17 /18 /19 /20 /21 /22 /23 /24 /25 /26" artifact="/1 /2 /3 /4 /5 /6 /7 /8 /9 /10 /11 /12 /13 /14 /15 /16 /17 /18 /19 /20 /21 /22 /23 /24 /25 /26" response="/1 /2 /3 /4 /5 /6 /7 /8 /9 /10 /11 /12 /13 /14 /15 /16 /17 /18 /19 /20 /21 /22 /23 /24 /25 /26" measure="/1 /2 /3 /4 /5 /6 /7 /8 /9 /10 /11 /12 /13 /14 /15 /16 /17 /18 /19 /20 /21 /22 /23 /24 /25 /26" documentLocation="/home/andres/projects/tesisCleartkRuta/cleartk-ruta/plaintext-input/_MSLite.txt"/>
+  <edu.exa.unicen.scenario:Phrase value="values by itself" begin="6854" end="6986"/>
+  <edu.exa.unicen.scenario:Phrase value="executes a command" begin="6854" end="6986"/>
+  <edu.exa.unicen.scenario:Phrase value="receives that" begin="6854" end="6986"/>
+  <edu.exa.unicen.scenario:Phrase value="receives from MSLite" begin="6854" end="6986"/>
+  <edu.exa.unicen.scenario:Phrase value="publishes an event" begin="6854" end="6986"/>
+  <edu.exa.unicen.scenario:Phrase value="reflects transmission in the UI" begin="7605" end="7823"/>
+  <edu.exa.unicen.scenario:Phrase value="displayeds property in the alarm viewer" begin="11242" end="11420"/>
+  <edu.exa.unicen.scenario:Phrase value="Names The name" begin="11242" end="11420"/>
+  <edu.exa.unicen.scenario:Phrase value="changes the status" begin="16243" end="16632"/>
+  <edu.exa.unicen.scenario:Phrase value="evaluates Logic to the value" begin="16243" end="16632"/>
+  <edu.exa.unicen.scenario:Phrase value="causes the execution" begin="16243" end="16632"/>
+  <edu.exa.unicen.scenario:Phrase value="changes the status" begin="17465" end="17837"/>
+  <edu.exa.unicen.scenario:Phrase value="evaluates Alarm condition to the value" begin="17465" end="17837"/>
+  <edu.exa.unicen.scenario:Phrase value="causes the execution" begin="17465" end="17837"/>
+  <edu.exa.unicen.scenario:Phrase value="receives End" begin="19926" end="20188"/>
+  <edu.exa.unicen.scenario:Phrase value="Generates Alarm ________________________________________" begin="19926" end="20188"/>
+  <edu.exa.unicen.scenario:Phrase value="acknowledges the alarm" begin="19926" end="20188"/>
+  <edu.exa.unicen.scenario:Phrase value="selects item in the Hierarchy Tree Editor" begin="41459" end="41639"/>
+  <edu.exa.unicen.scenario:Phrase value="updates value on all user screen" begin="65095" end="65180"/>
+  <edu.exa.unicen.scenario:Phrase value="displays within second" begin="65095" end="65180"/>
+  <edu.exa.unicen.scenario:Phrase value="displays the old value" begin="65095" end="65180"/>
+  <edu.exa.unicen.scenario:Phrase value="displayeds alarm on the user" begin="65301" end="65405"/>
+  <edu.exa.unicen.scenario:Phrase value="receives within second" begin="65301" end="65405"/>
+  <edu.exa.unicen.scenario:Phrase value="receives the alarm" begin="65301" end="65405"/>
+  <edu.exa.unicen.scenario:Phrase value="reflects the update" begin="66608" end="66731"/>
+  <edu.exa.unicen.scenario:Phrase value="receives the notification" begin="66608" end="66731"/>
+</xmi:XMI>

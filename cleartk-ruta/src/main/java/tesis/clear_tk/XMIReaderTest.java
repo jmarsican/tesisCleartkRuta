@@ -26,6 +26,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.ruta.engine.RutaEngine;
 import org.apache.uima.util.XMLInputSource;
+import org.cleartk.token.type.Token;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -76,7 +77,9 @@ public class XMIReaderTest {
   public static void main(String[] args) throws Exception {
     Files.list(Paths.get(XMI_INPUT_DIR)).forEach(file -> {
       try {
-        readXmi(file.getFileName().toString());
+        String filename = file.getFileName().toString();
+        LOGGER.info("FILE: " + filename);
+        readXmi(filename);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -123,66 +126,85 @@ public class XMIReaderTest {
     return sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
   }
 
-  public static void readXmi(String filename) throws Exception {
-
-    LOGGER.info("FILE: " + filename);
-
-    GeneralScenario scenario = createScenario(filename);
+  private static CAS xmiFileToCas(File xmiFile) throws Exception {
+    if (!xmiFile.exists()) {
+      return null;
+    }
 
     TypeSystemDescription tsd =
         TypeSystemDescriptionFactory.createTypeSystemDescriptionFromPath(TYPE_SYSTEM_FILE_PATH);
     JCas jCas = JCasFactory.createJCas(tsd);
 
-    File xmiFile = null;
-    xmiFile = new File(XMI_OUTPUT_DIR + filename);
-    boolean runRutaScript = false;
-    if (!xmiFile.exists()) {
-      runRutaScript = true;
-      xmiFile = new File(XMI_INPUT_DIR + filename);
-    }
-
     CasIOUtil.readXmi(jCas, xmiFile);
-    CAS cas = jCas.getCas();
+    return jCas.getCas();
+  }
 
-    if (runRutaScript) {
-      File aedesc = new File(PERFORMANCE_ENGINE_PATH);
-      XMLInputSource inae = new XMLInputSource(aedesc);
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(inae);
-      AnalysisEngineDescription aed = (AnalysisEngineDescription) specifier;
+  private static void runRuta(CAS cas, String filename) throws Exception {
+    File aedesc = new File(PERFORMANCE_ENGINE_PATH);
+    XMLInputSource inae = new XMLInputSource(aedesc);
+    ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(inae);
+    AnalysisEngineDescription aed = (AnalysisEngineDescription) specifier;
 
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      aed.resolveImports(resMgr);
+    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    aed.resolveImports(resMgr);
 
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aed, resMgr, null);
-      File scriptFile = new File(PERFORMANCE_SCRIPT_PATH);
-      ae.setConfigParameterValue(RutaEngine.PARAM_SCRIPT_PATHS, new String[] {scriptFile
-          .getParentFile().getAbsolutePath()});
-      String name = scriptFile.getName().substring(0, scriptFile.getName().length() - 5);
-      ae.setConfigParameterValue(RutaEngine.PARAM_MAIN_SCRIPT, name);
-      ae.reconfigure();
-      ae.process(cas);
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aed, resMgr, null);
+    File scriptFile = new File(PERFORMANCE_SCRIPT_PATH);
+    ae.setConfigParameterValue(RutaEngine.PARAM_SCRIPT_PATHS, new String[] {scriptFile
+        .getParentFile().getAbsolutePath()});
+    String name = scriptFile.getName().substring(0, scriptFile.getName().length() - 5);
+    ae.setConfigParameterValue(RutaEngine.PARAM_MAIN_SCRIPT, name);
+    ae.reconfigure();
+    ae.process(cas);
+    XMIWriter.writeXmi(cas, new File(XMI_OUTPUT_DIR + filename));
+  }
+
+  public static void readXmi(String filename) throws Exception {
+
+    // Read annotated-docs
+    CAS cas = xmiFileToCas(new File(XMI_INPUT_DIR + filename));
+
+    // //////////////////////////////////////
+    // RUN RUTA
+    if (cas == null) {
+      runRuta(cas, filename);
     }
+
+    // Read annotated-docs
+    cas = xmiFileToCas(new File(XMI_OUTPUT_DIR + filename));
+
+    // //////////////////////////////////////
+    // RUTA SENTENCES TO STANFORD ANNOTATION
     Collection<PerformanceSentence> sentences =
         JCasUtil.select(cas.getJCas(), PerformanceSentence.class);
 
+    Collection<Token> tokens = JCasUtil.select(cas.getJCas(), Token.class);
+
     List<Annotation> annotations = new ArrayList<Annotation>();
     for (PerformanceSentence sentence : sentences) {
+
+      tokens.stream().filter(
+          t -> t.getPos().startsWith("vb") || t.getBegin() > sentence.getBegin()
+              && t.getEnd() > sentence.getEnd());
+
       Annotation annotation = new Annotation(sentence.getCoveredText());
       annotation.set(CoreAnnotations.BeginIndexAnnotation.class, sentence.getBegin());
       annotation.set(CoreAnnotations.EndIndexAnnotation.class, sentence.getEnd());
       annotations.add(annotation);
     }
 
-    // Create the Stanford CoreNLP pipeline
+    // //////////////////////////////////////
+    // CREATE AND RUN THE STANFORD CORENLP PIPELINE
     Properties props = new Properties();
     props.setProperty("annotators", "tokenize,ssplit,pos,lemma,depparse,natlog,openie");
     props.setProperty("outputFormat", "X-CAS");
     props.setProperty("outputExtension", "xmi");
     StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
-    // Annotate an example document.
     pipeline.annotate(annotations);
 
+    // //////////////////////////////////////
+    // PREPARA NLG Y EXTRACTORS
     Lexicon lexicon = Lexicon.getDefaultLexicon();
     NLGFactory factory = new NLGFactory(lexicon);
 
@@ -193,41 +215,51 @@ public class XMIReaderTest {
             NominalSubjectPassiveExtractor.RELATION_SHORT_NAME,
             DirectObjectExtractor.RELATION_SHORT_NAME);
 
-    // Loop over sentences in the document
+    // //////////////////////////////////////
+    // POR CADA STANFORD ANNOTATION: OBTIENE EL GRAFO Y CORE LOS EXTRACTORS
+    List<ScenarioData> scenarioDataList = new ArrayList<ScenarioData>();
     annotations.forEach(annotation -> {
 
       LOGGER.info(String.format("SENTENCE: '%s' [%d->%d].", annotation,
           annotation.get(CoreAnnotations.BeginIndexAnnotation.class),
           annotation.get(CoreAnnotations.EndIndexAnnotation.class)));
 
-      SemanticGraph graph = getSemanticGraph(annotation);
-      List<SemanticGraphEdge> edges = graph.edgeListSorted();
-      ExtractorsManager extractorsManager = new ExtractorsManager(factory);
+      // getSemanticGraph
+        SemanticGraph graph = getSemanticGraph(annotation);
+        List<SemanticGraphEdge> edges = graph.edgeListSorted();
+        ExtractorsManager extractorsManager = new ExtractorsManager(factory);
 
-      // Filtering edges
+        // Filtering edges
         List<SemanticGraphEdge> filteredEdges =
             edges.stream().filter(edge -> extractors.contains(edge.getRelation().getShortName()))
                 .collect(Collectors.toList());
 
+        // por cada edge filtrado
         System.out.println("\ndetected phrases:\n");
         filteredEdges.forEach(filteredEdge -> {
           PhraseExtractor extractor =
               extractorsManager.getExtractor(filteredEdge.getRelation().getShortName());
 
-          if (extractor != null) {
-            PhraseElement phrase = extractor.assemble(graph, filteredEdge);
-            if (phrase != null) {
-              NLGElement nlgElement = realiser.realise(phrase);
-              int begin = annotation.get(CoreAnnotations.BeginIndexAnnotation.class);
-              int end = annotation.get(CoreAnnotations.EndIndexAnnotation.class);
-              addContent(scenario, nlgElement.toString(), begin, end);
-              System.out.println(nlgElement);
+          // RUN EXTRACTOR
+            if (extractor != null) {
+              PhraseElement phrase = extractor.assemble(graph, filteredEdge);
+              if (phrase != null) {
+                NLGElement nlgElement = realiser.realise(phrase);
+                int begin = annotation.get(CoreAnnotations.BeginIndexAnnotation.class);
+                int end = annotation.get(CoreAnnotations.EndIndexAnnotation.class);
+                scenarioDataList.add(new ScenarioData(nlgElement.toString(), begin, end));
+                System.out.println(nlgElement);
+              }
             }
-          }
-        });
+          });
         System.out.println();
       });
 
+    // //////////////////////////////////////
+    // CREATE SCENARIO
+    GeneralScenario scenario = createScenario(filename);
+    scenarioDataList.forEach(scenarioData -> addContent(scenario, scenarioData.getValue(),
+        scenarioData.getBegin(), scenarioData.getEnd()));
 
     String scenarioFileName =
         String.format(SCENARIO_OUTPUT_PATH, filename.substring(0, filename.indexOf('.')));
