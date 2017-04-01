@@ -22,8 +22,6 @@ public class ExtractorsManager {
 		extractor = new NominalSubjectPassiveExtractor(ScenarioPackage.GENERAL_SCENARIO__STIMULUS);
 		extractorsMap.put(extractor.getEdgeRelationShortName(), extractor);
 		
-		extractor = new NounModExtractor(ScenarioPackage.GENERAL_SCENARIO__STIMULUS);
-		extractorsMap.put(extractor.getEdgeRelationShortName(), extractor);
 	}	
 	
 	public PhraseExtractor getExtractor(String relationShortName){

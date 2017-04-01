@@ -12,6 +12,7 @@ import scenario.ScenarioFactory;
 import scenario.impl.GeneralScenarioImpl;
 import simplenlg.framework.NLGFactory;
 import simplenlg.framework.PhraseElement;
+import simplenlg.lexicon.Lexicon;
 import simplenlg.realiser.english.Realiser;
 import tesis.clear_tk.XMIReaderTest;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -32,8 +33,9 @@ public abstract class PhraseExtractor {
 	
 	public PhraseExtractor(int section) {
 		scenarioSection = section;
-		mFactory = new NLGFactory();
-		realizer = new Realiser();
+		Lexicon lexicon = Lexicon.getDefaultLexicon();
+		mFactory = new NLGFactory(lexicon);
+		realizer = new Realiser(lexicon);
 	}
 	
 	protected abstract PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge);
@@ -82,7 +84,8 @@ public abstract class PhraseExtractor {
 			phrase.setBegin(begin);
 			phrase.setEnd(end);
 			phrase.setValue(text);
-			Logger.getLogger(XMIReaderTest.class).info(text);
+			Logger.getLogger(this.getClass()).info(text);
+			
 			((EList<Phrase>)scenario.eGet(scenarioSection, true, true)).add(phrase);
 		});
 	}
