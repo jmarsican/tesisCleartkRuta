@@ -1,6 +1,5 @@
 package tesis.extractors;
 
-import simplenlg.framework.NLGFactory;
 import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
 import edu.stanford.nlp.ling.IndexedWord;
@@ -8,11 +7,10 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class DirectObjectExtractor extends PhraseExtractor {
-
-	public static final String RELATION_SHORT_NAME = "dobj";
-
-	public DirectObjectExtractor(NLGFactory factory) {
-		mFactory = factory;
+	
+	public DirectObjectExtractor(int section) {
+		super(section);
+		RELATION_SHORT_NAME = "dobj";
 	}
 
 	@Override

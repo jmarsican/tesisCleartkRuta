@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.apache.uima.UIMAFramework;
@@ -33,30 +31,14 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import scenario.GeneralScenario;
-import scenario.ScenarioFactory;
 import scenario.ScenarioPackage;
-import simplenlg.framework.NLGElement;
-import simplenlg.framework.NLGFactory;
-import simplenlg.framework.PhraseElement;
-import simplenlg.lexicon.Lexicon;
-import simplenlg.realiser.english.Realiser;
-import tesis.extractors.DirectObjectExtractor;
+import scenario.impl.GeneralScenarioImpl;
+import scenario.impl.ScenarioFactoryImpl;
 import tesis.extractors.ExtractorsManager;
-import tesis.extractors.NominalSubjectExtractor;
-import tesis.extractors.NominalSubjectPassiveExtractor;
-import tesis.extractors.PhraseExtractor;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
-
-import com.google.common.collect.Sets;
-
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
-import edu.stanford.nlp.semgraph.SemanticGraphEdge;
-import edu.stanford.nlp.util.CoreMap;
 
 public class XMIReaderTest {
 
@@ -86,8 +68,9 @@ public class XMIReaderTest {
     });
   }
 
-  private static GeneralScenario createScenario(String documentLocation) {
-    GeneralScenario scenario = ScenarioFactory.eINSTANCE.createGeneralScenario();
+  private static GeneralScenarioImpl createScenario(String documentLocation) {
+    GeneralScenarioImpl scenario =
+        (GeneralScenarioImpl) ScenarioFactoryImpl.eINSTANCE.createGeneralScenario();
 
     documentLocation = documentLocation.substring(0, documentLocation.lastIndexOf('.'));
     String absolutePath = new File(INPUT_DIR + documentLocation).getAbsolutePath();
@@ -102,28 +85,6 @@ public class XMIReaderTest {
     resource.getContents().add(scenario);
 
     return scenario;
-  }
-
-  private static void addContent(GeneralScenario scenario, String value, int begin, int end) {
-    scenario.Phrase phrase = ScenarioFactory.eINSTANCE.createPhrase();
-    phrase.setBegin(begin);
-    phrase.setEnd(end);
-    phrase.setValue(value);
-
-    scenario.setQualityAttribute("Performance");
-    scenario.getEnvironment().add(phrase);
-    scenario.getMeasure().add(phrase);
-    scenario.getResponse().add(phrase);
-    scenario.getSource().add(phrase);
-    scenario.getStimulus().add(phrase);
-    scenario.getArtifact().add(phrase);
-
-    scenario.eResource().getContents().add(phrase);
-  }
-
-  private static SemanticGraph getSemanticGraph(Annotation annotation) {
-    CoreMap sentence = annotation.get(CoreAnnotations.SentencesAnnotation.class).get(0);
-    return sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
   }
 
   private static CAS xmiFileToCas(File xmiFile) throws Exception {
@@ -203,67 +164,18 @@ public class XMIReaderTest {
 
     pipeline.annotate(annotations);
 
-    // //////////////////////////////////////
-    // PREPARA NLG Y EXTRACTORS
-    Lexicon lexicon = Lexicon.getDefaultLexicon();
-    NLGFactory factory = new NLGFactory(lexicon);
-
-    Realiser realiser = new Realiser(lexicon);
-
-    Set<String> extractors =
-        Sets.newHashSet(NominalSubjectExtractor.RELATION_SHORT_NAME,
-            NominalSubjectPassiveExtractor.RELATION_SHORT_NAME,
-            DirectObjectExtractor.RELATION_SHORT_NAME);
-
-    // //////////////////////////////////////
-    // POR CADA STANFORD ANNOTATION: OBTIENE EL GRAFO Y CORE LOS EXTRACTORS
-    List<ScenarioData> scenarioDataList = new ArrayList<ScenarioData>();
+    ExtractorsManager extractorsManager = new ExtractorsManager();
+    GeneralScenarioImpl scenario = createScenario(filename);
+    // Loop over sentences in the document
     annotations.forEach(annotation -> {
-
-      LOGGER.info(String.format("SENTENCE: '%s' [%d->%d].", annotation,
-          annotation.get(CoreAnnotations.BeginIndexAnnotation.class),
-          annotation.get(CoreAnnotations.EndIndexAnnotation.class)));
-
-      // getSemanticGraph
-        SemanticGraph graph = getSemanticGraph(annotation);
-        List<SemanticGraphEdge> edges = graph.edgeListSorted();
-        ExtractorsManager extractorsManager = new ExtractorsManager(factory);
-
-        // Filtering edges
-        List<SemanticGraphEdge> filteredEdges =
-            edges.stream().filter(edge -> extractors.contains(edge.getRelation().getShortName()))
-                .collect(Collectors.toList());
-
-        // por cada edge filtrado
-        System.out.println("\ndetected phrases:\n");
-        filteredEdges.forEach(filteredEdge -> {
-          PhraseExtractor extractor =
-              extractorsManager.getExtractor(filteredEdge.getRelation().getShortName());
-
-          // RUN EXTRACTOR
-            if (extractor != null) {
-              PhraseElement phrase = extractor.assemble(graph, filteredEdge);
-              if (phrase != null) {
-                NLGElement nlgElement = realiser.realise(phrase);
-                int begin = annotation.get(CoreAnnotations.BeginIndexAnnotation.class);
-                int end = annotation.get(CoreAnnotations.EndIndexAnnotation.class);
-                scenarioDataList.add(new ScenarioData(nlgElement.toString(), begin, end));
-                System.out.println(nlgElement);
-              }
-            }
-          });
-        System.out.println();
-      });
-
-    // //////////////////////////////////////
-    // CREATE SCENARIO
-    GeneralScenario scenario = createScenario(filename);
-    scenarioDataList.forEach(scenarioData -> addContent(scenario, scenarioData.getValue(),
-        scenarioData.getBegin(), scenarioData.getEnd()));
+      extractorsManager.getExtractors().forEach(
+          extractor -> extractor.extract(annotation, scenario));
+    });
 
     String scenarioFileName =
         String.format(SCENARIO_OUTPUT_PATH, filename.substring(0, filename.indexOf('.')));
     FileOutputStream outputStream = new FileOutputStream(new File(scenarioFileName));
-    scenario.eResource().save(outputStream, null);
+    // scenario.eResource().save(outputStream, null);
+
   }
 }

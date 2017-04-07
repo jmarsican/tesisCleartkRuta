@@ -2,7 +2,6 @@ package tesis.extractors;
 
 import simplenlg.features.Feature;
 import simplenlg.features.Tense;
-import simplenlg.framework.NLGFactory;
 import simplenlg.framework.PhraseElement;
 import simplenlg.phrasespec.NPPhraseSpec;
 import simplenlg.phrasespec.SPhraseSpec;
@@ -13,10 +12,9 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class NominalSubjectPassiveExtractor extends PhraseExtractor {
 
-	public static final String RELATION_SHORT_NAME = "nsubjpass";
-
-	public NominalSubjectPassiveExtractor(NLGFactory nlgFactory) {
-		mFactory = nlgFactory;
+	public NominalSubjectPassiveExtractor(int section) {
+		super(section);
+		RELATION_SHORT_NAME = "nsubjpass";	
 	}
 
 	@Override
@@ -36,7 +34,7 @@ public class NominalSubjectPassiveExtractor extends PhraseExtractor {
 		NPPhraseSpec nounPhrase = mFactory.createNounPhrase(object);
 		addCompounds(graph, indexedObject, nounPhrase);
 
-		PhraseExtractor nmodExtractor = new NounModExtractor(mFactory);
+		PhraseExtractor nmodExtractor = new NounModExtractor(scenarioSection);
 		PhraseElement nmodPhrase = nmodExtractor.doAssemble(graph, edge);
 
 		SPhraseSpec phrase = null;

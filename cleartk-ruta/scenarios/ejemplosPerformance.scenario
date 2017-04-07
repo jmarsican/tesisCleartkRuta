@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.exa.unicen.scenario="http://edu/exa/unicen/scenario">
-  <edu.exa.unicen.scenario:GeneralScenario qualityAttribute="Performance" source="/1 /2 /3 /4" stimulus="/1 /2 /3 /4" environment="/1 /2 /3 /4" artifact="/1 /2 /3 /4" response="/1 /2 /3 /4" measure="/1 /2 /3 /4" documentLocation="/home/andres/projects/tesisCleartkRuta/cleartk-ruta/plaintext-input/ejemplosPerformance.txt"/>
-  <edu.exa.unicen.scenario:Phrase value="processes within second" begin="408" end="468"/>
-  <edu.exa.unicen.scenario:Phrase value="processes input" begin="408" end="468"/>
-  <edu.exa.unicen.scenario:Phrase value="leaves the system" begin="545" end="620"/>
-  <edu.exa.unicen.scenario:Phrase value="detects within second" begin="545" end="620"/>
-</xmi:XMI>

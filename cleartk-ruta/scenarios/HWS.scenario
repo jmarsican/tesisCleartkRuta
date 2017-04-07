@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.exa.unicen.scenario="http://edu/exa/unicen/scenario">
-  <edu.exa.unicen.scenario:GeneralScenario qualityAttribute="Performance" source="/1" stimulus="/1" environment="/1" artifact="/1" response="/1" measure="/1" documentLocation="/home/andres/projects/tesisCleartkRuta/cleartk-ruta/plaintext-input/HWS.txt"/>
-  <edu.exa.unicen.scenario:Phrase value="exceeds second" begin="11377" end="11421"/>
-</xmi:XMI>

@@ -2,8 +2,9 @@
 .settings
 bin
 /cleartk-ruta/.buildpath
-/cleartk-ruta/input/
-/cleartk-ruta/output/
+/cleartk-ruta/annotated-docs/
+/cleartk-ruta/qa-sentences/
+/cleartk-ruta/scenarios/
 /cleartk-ruta/descriptor/uima/
 /cleartk-ruta/target/
 /cleartk-ruta/resources/lemmas/
