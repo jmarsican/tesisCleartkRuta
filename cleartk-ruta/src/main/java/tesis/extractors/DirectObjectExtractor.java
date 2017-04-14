@@ -7,45 +7,39 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class DirectObjectExtractor extends PhraseExtractor {
-	
-	public DirectObjectExtractor(int section) {
-		super(section);
-		RELATION_SHORT_NAME = "dobj";
-	}
 
-	@Override
-	protected SPhraseSpec doAssemble(SemanticGraph graph, SemanticGraphEdge edge) {
-		IndexedWord indexedVerb = edge.getGovernor();
-		IndexedWord indexedObject = getDependent(graph, indexedVerb, "dobj");
-		IndexedWord indexedModifier = getDependent(graph, indexedObject, "amod");
-		IndexedWord indexedDeterminer = getDependent(graph, indexedObject,
-				"det");
+  public DirectObjectExtractor(int section) {
+    super(section);
+    RELATION_SHORT_NAME = "dobj";
+  }
 
-		String verb = indexedVerb.originalText();
-		String object = indexedObject.originalText();
-		String modifier = indexedModifier.originalText();
-		String determiner = indexedDeterminer.originalText();
+  @Override
+  protected SPhraseSpec doAssemble(SemanticGraph graph, SemanticGraphEdge edge) {
+    IndexedWord indexedVerb = edge.getGovernor();
+    IndexedWord indexedObject = getDependent(graph, indexedVerb, "dobj");
+    IndexedWord indexedModifier = getDependent(graph, indexedObject, "amod");
+    IndexedWord indexedDeterminer = getDependent(graph, indexedObject, "det");
 
-		if (object.length() + modifier.length() + determiner.length() == 0) {
-			return null;
-		}
+    String verb = indexedVerb.originalText();
+    String object = indexedObject.originalText();
+    String modifier = indexedModifier.originalText();
+    String determiner = indexedDeterminer.originalText();
 
-		NPPhraseSpec nlpComplement = mFactory.createNounPhrase(object);
-		nlpComplement.setDeterminer(determiner);
-		nlpComplement.addModifier(modifier);
+    if (object.length() + modifier.length() + determiner.length() == 0) {
+      return null;
+    }
 
-		SPhraseSpec phrase = null;
+    NPPhraseSpec nlpComplement = mFactory.createNounPhrase(object);
+    nlpComplement.setDeterminer(determiner);
+    nlpComplement.addModifier(modifier);
 
-		phrase = new SPhraseSpec(mFactory);
-		phrase.setVerb(mFactory.createVerbPhrase(verb));
-		phrase.setObject(nlpComplement);
+    SPhraseSpec phrase = null;
 
-		return phrase;
-	}
+    phrase = new SPhraseSpec(mFactory);
+    phrase.setVerb(mFactory.createVerbPhrase(verb));
+    phrase.setObject(nlpComplement);
 
-	@Override
-	public String getEdgeRelationShortName() {
-		return RELATION_SHORT_NAME;
-	}
+    return phrase;
+  }
 
 }

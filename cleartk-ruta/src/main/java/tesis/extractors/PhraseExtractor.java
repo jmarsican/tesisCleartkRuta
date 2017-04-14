@@ -1,15 +1,12 @@
 package tesis.extractors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.EList;
 
-import scenario.Phrase;
-import scenario.ScenarioFactory;
-import scenario.impl.GeneralScenarioImpl;
 import simplenlg.framework.NLGFactory;
 import simplenlg.framework.PhraseElement;
 import simplenlg.lexicon.Lexicon;
@@ -39,8 +36,6 @@ public abstract class PhraseExtractor {
 
   protected abstract PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge);
 
-  public abstract String getEdgeRelationShortName();
-
   private Stream<SemanticGraphEdge> getOutEdgesSorted(SemanticGraph graph, IndexedWord node,
       String relationShortName) {
     return graph.getOutEdgesSorted(node).stream()
@@ -64,7 +59,7 @@ public abstract class PhraseExtractor {
     phrase.addPreModifier(modifier);
   }
 
-  public void extract(Annotation annotation, GeneralScenarioImpl scenario) {
+  public List<Phrase> extract(Annotation annotation) {
     SemanticGraph graph = getSemanticGraph(annotation);
     List<SemanticGraphEdge> edges = graph.edgeListSorted();
 
@@ -73,6 +68,8 @@ public abstract class PhraseExtractor {
         edges.stream()
             .filter(edge -> (edge.getRelation().getShortName()).equals(getEdgeRelationShortName()))
             .collect(Collectors.toList());
+
+    List<Phrase> phrases = new ArrayList<Phrase>();
 
     filteredEdges.forEach(filteredEdge -> {
       PhraseElement phraseElement = doAssemble(graph, filteredEdge);
@@ -83,13 +80,15 @@ public abstract class PhraseExtractor {
       int begin = annotation.get(CoreAnnotations.BeginIndexAnnotation.class);
       int end = annotation.get(CoreAnnotations.EndIndexAnnotation.class);
 
-      Phrase phrase = ScenarioFactory.eINSTANCE.createPhrase();
-      phrase.setBegin(begin);
-      phrase.setEnd(end);
-      phrase.setValue(text);
-      Logger.getLogger(this.getClass()).info(text);
+      phrases.add(new Phrase(scenarioSection, text, begin, end));
 
-      ((EList<Phrase>) scenario.eGet(scenarioSection, true, true)).add(phrase);
+      Logger.getLogger(this.getClass()).info(text);
     });
+
+    return phrases;
+  }
+
+  public String getEdgeRelationShortName() {
+    return RELATION_SHORT_NAME;
   }
 }

@@ -10,41 +10,36 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class NominalSubjectExtractor extends PhraseExtractor {
-	
-	public NominalSubjectExtractor(int section) {
-		super(section);
-		RELATION_SHORT_NAME = "nsubj";
-	}
 
-	@Override
-	protected PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge) {
-		IndexedWord indexedVerb = edge.getGovernor();
+  public NominalSubjectExtractor(int section) {
+    super(section);
+    RELATION_SHORT_NAME = "nsubj";
+  }
 
-		String verb = indexedVerb.originalText();
+  @Override
+  protected PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge) {
+    IndexedWord indexedVerb = edge.getGovernor();
 
-		VPPhraseSpec verbPhrase = mFactory.createVerbPhrase(verb);
-		boolean negated = getDependent(graph, indexedVerb, "neg") != EMPTY_INDEXED_WORD;
-		verbPhrase.setFeature(Feature.NEGATED, negated);
-		addCompounds(graph, indexedVerb, verbPhrase);
+    String verb = indexedVerb.originalText();
 
-		PhraseExtractor nmodExtractor = new NounModExtractor(scenarioSection);
-		PhraseElement nmodPhrase = nmodExtractor.doAssemble(graph, edge);
-		
-		SPhraseSpec phrase = null;
-		
-		if (nmodPhrase != null) {
-			phrase = new SPhraseSpec(mFactory);
-			phrase.setFeature(Feature.TENSE, Tense.PRESENT);
-			phrase.setVerb(verbPhrase);
-			phrase.addModifier(nmodPhrase);
-		}
-		
-		return phrase;
-	}
+    VPPhraseSpec verbPhrase = mFactory.createVerbPhrase(verb);
+    boolean negated = getDependent(graph, indexedVerb, "neg") != EMPTY_INDEXED_WORD;
+    verbPhrase.setFeature(Feature.NEGATED, negated);
+    addCompounds(graph, indexedVerb, verbPhrase);
 
-	@Override
-	public String getEdgeRelationShortName() {
-		return RELATION_SHORT_NAME;
-	}
+    PhraseExtractor nmodExtractor = new NounModExtractor(scenarioSection);
+    PhraseElement nmodPhrase = nmodExtractor.doAssemble(graph, edge);
+
+    SPhraseSpec phrase = null;
+
+    if (nmodPhrase != null) {
+      phrase = new SPhraseSpec(mFactory);
+      phrase.setFeature(Feature.TENSE, Tense.PRESENT);
+      phrase.setVerb(verbPhrase);
+      phrase.addModifier(nmodPhrase);
+    }
+
+    return phrase;
+  }
 
 }
