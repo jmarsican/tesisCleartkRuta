@@ -15,59 +15,59 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.XMLSerializer;
 import org.cleartk.util.ViewUriUtil;
 
-public class XMIWriter<ANNOTATION_TYPE extends Annotation, BLOCK_TYPE extends Annotation>
-		extends JCasAnnotator_ImplBase {
+public class XMIWriter<ANNOTATION_TYPE extends Annotation, BLOCK_TYPE extends Annotation> extends
+    JCasAnnotator_ImplBase {
 
-	public static final String PARAM_OUTPUT_PATH = "outputPath";
-	@ConfigurationParameter(description = "Output path directory.", name = PARAM_OUTPUT_PATH, mandatory = true)
-	private String outputPath;
-	
-	private UimaContext context;
+  public static final String PARAM_OUTPUT_PATH = "outputPath";
+  @ConfigurationParameter(description = "Output path directory.", name = PARAM_OUTPUT_PATH,
+      mandatory = true)
+  private String outputPath;
 
-	@Override
-	public void initialize(UimaContext aContext)
-			throws ResourceInitializationException {
-		super.initialize(aContext);
-		if (aContext == null && context != null) {
-			aContext = context;
-		}
-		if (aContext != null) {
-			outputPath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_PATH);
-			this.context = aContext;
-		}
-	}
+  private UimaContext context;
 
-	private static void writeXmi(CAS aCas, File name) throws Exception {
-		FileOutputStream out = null;
+  @Override
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    super.initialize(aContext);
+    if (aContext == null && context != null) {
+      aContext = context;
+    }
+    if (aContext != null) {
+      outputPath = (String) aContext.getConfigParameterValue(PARAM_OUTPUT_PATH);
+      this.context = aContext;
+    }
+  }
 
-		try {
-			// write XMI
-			out = new FileOutputStream(name);
-			XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());
-			XMLSerializer xmlSer = new XMLSerializer(out, false);
-			ser.serialize(aCas, xmlSer.getContentHandler());
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
-	}
+  public static void writeXmi(CAS aCas, File name) throws Exception {
+    FileOutputStream out = null;
 
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		CAS cas = jcas.getCas();
-		
-		String fileName = (new File(ViewUriUtil.getURI(jcas))).getName();
-		if (!fileName.endsWith(".xmi")) {
-			fileName = fileName + ".xmi";
-		}
-		File file = new File(outputPath, fileName);
-		try {
-			writeXmi(cas, file);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+    try {
+      // write XMI
+      out = new FileOutputStream(name);
+      XmiCasSerializer ser = new XmiCasSerializer(aCas.getTypeSystem());
+      XMLSerializer xmlSer = new XMLSerializer(out, false);
+      ser.serialize(aCas, xmlSer.getContentHandler());
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      if (out != null) {
+        out.close();
+      }
+    }
+  }
+
+  @Override
+  public void process(JCas jcas) throws AnalysisEngineProcessException {
+    CAS cas = jcas.getCas();
+
+    String fileName = (new File(ViewUriUtil.getURI(jcas))).getName();
+    if (!fileName.endsWith(".xmi")) {
+      fileName = fileName + ".xmi";
+    }
+    File file = new File(outputPath, fileName);
+    try {
+      writeXmi(cas, file);
+    } catch (Exception e) {
+      throw new AnalysisEngineProcessException(e);
+    }
+  }
 }
