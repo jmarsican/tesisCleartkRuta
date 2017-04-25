@@ -1,15 +1,23 @@
 package edu.exa.unicen.qascenario.ui.popup.actions;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
@@ -36,6 +44,7 @@ import scenario.GeneralScenario;
 import scenario.Phrase;
 import scenario.ScenarioFactory;
 import scenario.ScenarioPackage;
+import scenario.impl.GeneralScenarioImpl;
 
 public class ScenarioDialog extends Dialog {
 
@@ -44,6 +53,8 @@ public class ScenarioDialog extends Dialog {
   private GeneralScenario scenario;
   private ComposedAdapterFactory composedAdapterFactory;
   private Resource resource;
+  
+  private Map<EStructuralFeature, ListViewer> map;
 
   private void openDocumentDialog(String documentLocation, int selectionStart, int selectionEnd) {
     DocumentDialog documentDialog = new DocumentDialog(createShell());
@@ -104,6 +115,8 @@ public class ScenarioDialog extends Dialog {
         listViewer.refresh(false);
       }
     });
+    
+    map.put(feature, listViewer);
 
     root.layout();
   }
@@ -112,6 +125,7 @@ public class ScenarioDialog extends Dialog {
     Composite root = (Composite) super.createDialogArea(parent);
     root.setLayout(new GridLayout(2, true));
 
+    map = new HashMap<EStructuralFeature, ListViewer>();
     createSection(root, "Source", ScenarioPackage.eINSTANCE.getGeneralScenario_Source());
     createSection(root, "Stimulus", ScenarioPackage.eINSTANCE.getGeneralScenario_Stimulus());
     createSection(root, "Environmnet", ScenarioPackage.eINSTANCE.getGeneralScenario_Environment());
@@ -139,7 +153,27 @@ public class ScenarioDialog extends Dialog {
   protected void buttonPressed(int buttonId) {
     switch (buttonId) {
       case _GENERATE:
-        // addPlayer();
+        GeneralScenarioImpl newScenario = ScenarioGenerator.createNewScenarioInstance();
+        for (EStructuralFeature feature : map.keySet()) {
+        	newScenario.eSet(feature, ((IStructuredSelection) map.get(feature).getSelection()).toList());
+        }
+        
+        URI uri = resource.getURI();        
+        String scenarioFileName = ResourcesPlugin.getWorkspace().getRoot().getLocation() + uri.toString() + ".gen";
+        
+        FileOutputStream outputStream;
+		try {
+			
+			outputStream = new FileOutputStream(new File(scenarioFileName));
+			newScenario.eResource().save(outputStream, null);
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+            
+        
         break;
       default:
         super.buttonPressed(buttonId);
