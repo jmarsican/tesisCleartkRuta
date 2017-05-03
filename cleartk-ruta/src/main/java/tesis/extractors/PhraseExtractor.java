@@ -61,6 +61,7 @@ public abstract class PhraseExtractor {
 
   public List<Phrase> extract(Annotation annotation) {
     SemanticGraph graph = getSemanticGraph(annotation);
+
     List<SemanticGraphEdge> edges = graph.edgeListSorted();
 
     // Filtering edges
@@ -81,7 +82,6 @@ public abstract class PhraseExtractor {
       int end = annotation.get(CoreAnnotations.EndIndexAnnotation.class);
 
       phrases.add(new Phrase(scenarioSection, text, begin, end));
-
       Logger.getLogger(this.getClass()).info(text);
     });
 

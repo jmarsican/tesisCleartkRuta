@@ -25,7 +25,8 @@ public class DirectObjectExtractor extends PhraseExtractor {
     String modifier = indexedModifier.originalText();
     String determiner = indexedDeterminer.originalText();
 
-    if (object.length() + modifier.length() + determiner.length() == 0) {
+    if ("IN".equals(indexedObject.tag()) && modifier.length() == 0
+        || object.length() + modifier.length() + determiner.length() == 0) {
       return null;
     }
 

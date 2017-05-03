@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -13,6 +15,8 @@ import tesis.extractors.ExtractorsManager;
 import tesis.extractors.Phrase;
 import uima.ruta.example.TestPerformance.PerformanceSentence;
 import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
@@ -54,5 +58,33 @@ public class ScenarioLinker {
     });
 
     return phrases;
+  }
+
+  public static Set<String> getLemmas(List<Phrase> phrases) throws Exception {
+    String text =
+        phrases.stream().map(phrase -> phrase.getText()).collect(Collectors.joining("\n"));
+    return getLemmas(text);
+  }
+
+  public static Set<String> getLemmas(String text) throws Exception {
+    // Create Stanford CoreNLP pipeline
+    Properties props = new Properties();
+    props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
+    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+    Annotation document = new Annotation(text);
+    pipeline.annotate(document);
+
+    Set<String> lemmas =
+        document.get(SentencesAnnotation.class).stream()
+            .map(sentence -> sentence.get(TokensAnnotation.class)).flatMap(List::stream)
+            .filter(token -> token.tag().startsWith("VB") || token.tag().startsWith("NN"))
+            .map(token -> token.lemma()).collect(Collectors.toSet());
+
+    System.out.println("TEXT: " + text);
+    System.out.println("LEMMAS:");
+    lemmas.forEach(lemma -> System.out.println(lemma));
+
+    return lemmas;
   }
 }
