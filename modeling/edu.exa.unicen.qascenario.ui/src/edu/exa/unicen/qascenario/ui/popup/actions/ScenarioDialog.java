@@ -146,27 +146,10 @@ public class ScenarioDialog extends Dialog {
   protected void buttonPressed(int buttonId) {
     switch (buttonId) {
       case _GENERATE:
-    	ScenarioGenerator generator = new CombinationScenarioGenerator(resource.getURI());
-        generator.generate(map);
-//        for (EStructuralFeature feature : map.keySet()) {
-//        	newScenario.eSet(feature, ((IStructuredSelection) map.get(feature).getSelection()).toList());
-//        }
-//        
-//        URI uri = resource.getURI();        
-//        String scenarioFileName = ResourcesPlugin.getWorkspace().getRoot().getLocation() + uri.toString() + ".gen";
-//        
-//        FileOutputStream outputStream;
-//		try {
-//			
-//			outputStream = new FileOutputStream(new File(scenarioFileName));
-//			newScenario.eResource().save(outputStream, null);
-//			
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-            
+    	  
+    	ScenarioGenerator generator = new MultiValueScenarioGenerator(resource.getURI());
+//    	ScenarioGenerator generator = new CombinationScenarioGenerator(resource.getURI());
+        generator.generate(map);            
         
         break;
       default:
