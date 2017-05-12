@@ -26,16 +26,12 @@ public abstract class ScenarioGenerator {
 				.createGeneralScenario();
 
 		ResourceSet resourceSet = new ResourceSetImpl();
-		resourceSet
-				.getResourceFactoryRegistry()
+		resourceSet.getResourceFactoryRegistry()
 				.getExtensionToFactoryMap()
-				.put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-						new XMIResourceFactoryImpl());
-		resourceSet.getPackageRegistry().put(ScenarioPackage.eNS_URI,
-				ScenarioPackage.eINSTANCE);
+				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+		resourceSet.getPackageRegistry().put(ScenarioPackage.eNS_URI, ScenarioPackage.eINSTANCE);
 
-		Resource resource = resourceSet.createResource(URI
-				.createURI("http:///My.scenario"));
+		Resource resource = resourceSet.createResource(URI.createURI("http:///My.scenario"));
 		resource.getContents().add(scenario);
 
 		return scenario;
