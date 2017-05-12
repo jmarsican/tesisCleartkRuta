@@ -20,6 +20,10 @@ public class NominalSubjectExtractor extends PhraseExtractor {
   protected PhraseElement doAssemble(SemanticGraph graph, SemanticGraphEdge edge) {
     IndexedWord indexedVerb = edge.getGovernor();
 
+    if (!indexedVerb.tag().startsWith("VB")) {
+      return null;
+    }
+
     String verb = indexedVerb.originalText();
 
     VPPhraseSpec verbPhrase = mFactory.createVerbPhrase(verb);
