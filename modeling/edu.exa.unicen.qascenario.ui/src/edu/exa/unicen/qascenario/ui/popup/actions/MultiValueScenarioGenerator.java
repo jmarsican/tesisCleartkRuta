@@ -15,32 +15,33 @@ import scenario.impl.GeneralScenarioImpl;
 
 public class MultiValueScenarioGenerator extends ScenarioGenerator {
 
-	public MultiValueScenarioGenerator(URI uri) {
-		super(uri);
-	}
+  public MultiValueScenarioGenerator(URI uri) {
+    super(uri);
+  }
 
-	@Override
-	public void generate(Map<EStructuralFeature, ListViewer> map) {
-		GeneralScenarioImpl newScenario = createNewScenarioInstance();
-		for (EStructuralFeature feature : map.keySet()) {
-        	newScenario.eSet(feature, ((IStructuredSelection) map.get(feature).getSelection()).toList());
-        }
-        
-    
-        String scenarioFileName = ResourcesPlugin.getWorkspace().getRoot().getLocation() + mUri.toString() + ".gen";
-        
-        FileOutputStream outputStream;
-		try {
-			
-			outputStream = new FileOutputStream(new File(scenarioFileName));
-			newScenario.eResource().save(outputStream, null);
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+  @Override
+  public void generate(Map<EStructuralFeature, ListViewer> map) {
+    GeneralScenarioImpl newScenario = createNewScenarioInstance();
+    for (EStructuralFeature feature : map.keySet()) {
+      newScenario.eSet(feature, ((IStructuredSelection) map.get(feature).getSelection()).toList());
+    }
+    newScenario.eResource().getContents().addAll(newScenario.eCrossReferences());
 
-	}
+    String scenarioFileName =
+        ResourcesPlugin.getWorkspace().getRoot().getLocation() + mUri.toString() + ".gen";
+
+    FileOutputStream outputStream;
+    try {
+
+      outputStream = new FileOutputStream(new File(scenarioFileName));
+      newScenario.eResource().save(outputStream, null);
+
+
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+  }
 
 }
