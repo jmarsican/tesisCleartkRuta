@@ -8,6 +8,7 @@ import java.util.Map;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 
@@ -25,7 +26,8 @@ public class MultiValueScenarioGenerator extends ScenarioGenerator {
     for (EStructuralFeature feature : map.keySet()) {
       newScenario.eSet(feature, ((IStructuredSelection) map.get(feature).getSelection()).toList());
     }
-    newScenario.eResource().getContents().addAll(newScenario.eCrossReferences());
+    //Resolve cross references
+    newScenario.eResource().getContents().addAll(EcoreUtil.copyAll(newScenario.eCrossReferences()));
 
     String scenarioFileName =
         ResourcesPlugin.getWorkspace().getRoot().getLocation() + mUri.toString() + ".gen";

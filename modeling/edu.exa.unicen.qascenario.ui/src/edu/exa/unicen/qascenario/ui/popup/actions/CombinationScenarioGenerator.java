@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 
@@ -63,6 +64,8 @@ public class CombinationScenarioGenerator extends ScenarioGenerator {
 		for (EStructuralFeature feature : scenarioValues.keySet()) {
 			newScenario.eSet(feature, Arrays.asList(scenarioValues.get(feature)));
 		}
+		//Resolve cross references and avoid loose original references
+	    newScenario.eResource().getContents().addAll(EcoreUtil.copyAll(newScenario.eCrossReferences()));
 
 		String scenarioFileName = ResourcesPlugin.getWorkspace().getRoot()
 				.getLocation()
