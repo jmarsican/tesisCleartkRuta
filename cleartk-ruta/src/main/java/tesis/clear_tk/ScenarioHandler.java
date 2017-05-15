@@ -17,7 +17,7 @@ import scenario.impl.GeneralScenarioImpl;
 import scenario.impl.ScenarioFactoryImpl;
 import tesis.extractors.Phrase;
 
-public class ScenarioGenerator {
+public class ScenarioHandler {
 
   private static final String SCENARIO_OUTPUT_PATH = Properties.SCENARIOS_DIR + "%s.scenario";
 
@@ -40,7 +40,7 @@ public class ScenarioGenerator {
     return scenario;
   }
 
-  public static void run(List<Phrase> phrases, String filename) throws Exception {
+  public static void save(List<Phrase> phrases, String filename) throws Exception {
 
     GeneralScenarioImpl scenario = createScenario(filename);
 

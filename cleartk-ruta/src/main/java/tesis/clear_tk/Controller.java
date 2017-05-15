@@ -56,7 +56,7 @@ public class Controller {
 
     List<Phrase> phrases = ScenarioLinker.extract(cas);
 
-    ScenarioGenerator.run(phrases, filename);
+    ScenarioHandler.save(phrases, filename);
 
     Set<String> lemmas = ScenarioLinker.getLemmas(phrases);
 

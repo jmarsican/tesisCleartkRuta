@@ -1,23 +1,17 @@
 package edu.exa.unicen.qascenario.ui.popup.actions;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
@@ -44,7 +38,6 @@ import scenario.GeneralScenario;
 import scenario.Phrase;
 import scenario.ScenarioFactory;
 import scenario.ScenarioPackage;
-import scenario.impl.GeneralScenarioImpl;
 
 public class ScenarioDialog extends Dialog {
 
@@ -153,26 +146,10 @@ public class ScenarioDialog extends Dialog {
   protected void buttonPressed(int buttonId) {
     switch (buttonId) {
       case _GENERATE:
-        GeneralScenarioImpl newScenario = ScenarioGenerator.createNewScenarioInstance();
-        for (EStructuralFeature feature : map.keySet()) {
-        	newScenario.eSet(feature, ((IStructuredSelection) map.get(feature).getSelection()).toList());
-        }
-        
-        URI uri = resource.getURI();        
-        String scenarioFileName = ResourcesPlugin.getWorkspace().getRoot().getLocation() + uri.toString() + ".gen";
-        
-        FileOutputStream outputStream;
-		try {
-			
-			outputStream = new FileOutputStream(new File(scenarioFileName));
-			newScenario.eResource().save(outputStream, null);
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-            
+    	  
+    	ScenarioGenerator generator = new MultiValueScenarioGenerator(resource.getURI());
+//    	ScenarioGenerator generator = new CombinationScenarioGenerator(resource.getURI());
+        generator.generate(map);            
         
         break;
       default:
