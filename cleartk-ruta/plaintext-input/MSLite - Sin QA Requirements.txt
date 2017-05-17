@@ -108,7 +108,8 @@ The unique property considered to be an abnormal state and therefore an alarm is
 a) Alarms are persisted in the database. 
 b) It is displayed in the work area as a request for acknowledging the alarm. This is displayed to all logged in users who have read access to the associated alarm property for the alarm. 
 c) It is also displayed in the alarm viewer with its status as not acknowledged. All alarms in the alarm viewer are displayed in reverse chronological order, i.e. as a stack (Last In First Out) - with the newest alarm on top. The following properties for the alarm are displayed in the alarm viewer: 
-(i) Alarm Name - The custom name of the alarm specified at the time of the creation of the Alarm Rule. 
+(i) Alarm Name.
+The custom name of the alarm specified at the time of the creation of the Alarm Rule. 
 (ii) Time - The Time stamp of occurrence 
 (iii) Status - Ack (for Acknowledged / Not Ack (for Not Acknowledged) 
 (iv) Object Property (Object Name and Associated Alarm Property separated with a .) 
@@ -201,14 +202,16 @@ Main Success Scenario
 1. System receives a COV event and positively evaluates condition of at least one Alarm rule. 
 2. System persists the alarm and all its attributes in the system database. 
 3. System displays a new alarm line with the status “Not Ack.” at the top of the Alarm Viewer for all logged in users with read access to the associated alarm property. [UC004.UI001] This line contains the following info: 
-a. Alarm Name - The custom name of the alarm specified at the time of the creation of the Alarm Rule. 
+a. Alarm Name.
+The custom name of the alarm specified at the time of the creation of the Alarm Rule. 
 b. Time - The Time stamp of occurence 
 c. Status - Ack (for Acknowledged / Not Ack (for Not Acknowledged) 
 d. Object Property (Object Name and Associated Alarm Property separated with a .) 
 e. Trigger Value (Value of associated alarm property that triggered the alarm) 
 f. Owner - User name who acknowledged the alarm (if the alarm is acknowledged) and None (if the alarm is Not Acknowledged). 
 4. System displays “Alarm Acknowledgment Request” dialog for all logged in users with read access to the associated alarm property.[UC004.UI001] This dialog shows the following elements: 
-a. Alarm Name - The custom name of the alarm specified at the time of the creation of the Alarm Rule. 
+a. Alarm Name.
+The custom name of the alarm specified at the time of the creation of the Alarm Rule. 
 b. Time - The Time stamp of occurence 
 c. Object Property (Object Name and Associated Alarm Property separated with a .) 
 d. Trigger Value (Value of associated alarm property that triggered the alarm) 
