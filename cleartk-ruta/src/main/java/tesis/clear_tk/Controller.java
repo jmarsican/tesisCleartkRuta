@@ -14,8 +14,7 @@ import org.apache.uima.cas.CAS;
 
 import tesis.extractors.Phrase;
 import tesis.similarityCoefficient.Jaccard;
-
-import com.google.common.collect.Sets;
+import tesis.similarityCoefficient.JaccardRunner;
 
 public class Controller {
 
@@ -61,27 +60,8 @@ public class Controller {
 
     Set<String> lemmas = ScenarioLinker.getLemmas(phrases);
 
-    String p1 =
-        "A field system detects a change of some value and notifies MSLite. "
-            + "The system operates under normal conditions1. "
-            + "The value is updated on all user screens that display the old value "
-            + "within 3 seconds.";
-    String p2 =
-        "An alarm occurs, either originating in a field system or in MSLite. "
-            + "The system operates under normal conditions2. "
-            + "The alarm is displayed on the user interfaces of all users "
-            + "that must receive the alarm within 3 seconds. "
-            + "The Time durations specified in this scenario are performance goals "
-            + "and are not to be taken as hard deadlines.";
-
-    Set<String> lemmasP1 = ScenarioLinker.getLemmas(p1);
-    Set<String> lemmasP2 = ScenarioLinker.getLemmas(p2);
-    Set<String> lemmasP1P2 = Sets.newHashSet();
-    lemmasP1P2.addAll(lemmasP1);
-    lemmasP1P2.addAll(lemmasP2);
-
-    results.put(filename + " P1", Jaccard.getCoefficient(lemmas, lemmasP1));
-    results.put(filename + " P2", Jaccard.getCoefficient(lemmas, lemmasP2));
-    results.put(filename + " P1-P2", Jaccard.getCoefficient(lemmas, lemmasP1P2));
+    results.put(filename + " P1", Jaccard.getCoefficient(lemmas, JaccardRunner.LEMMAS_P1));
+    results.put(filename + " P2", Jaccard.getCoefficient(lemmas, JaccardRunner.LEMMAS_P2));
+    results.put(filename + " P1-P2", Jaccard.getCoefficient(lemmas, JaccardRunner.LEMMAS_P1_P2));
   }
 }

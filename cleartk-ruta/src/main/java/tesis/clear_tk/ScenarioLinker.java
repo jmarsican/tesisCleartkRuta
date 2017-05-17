@@ -66,7 +66,7 @@ public class ScenarioLinker {
     return getLemmas(text);
   }
 
-  public static Set<String> getLemmas(String text) throws Exception {
+  public static Set<String> getLemmas(String text) {
     // Create Stanford CoreNLP pipeline
     Properties props = new Properties();
     props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
