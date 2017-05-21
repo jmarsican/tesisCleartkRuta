@@ -850,8 +850,8 @@ E3. An extended FSS (EFSS) has been developed that supports generation of alarms
 (H , H) 
 Performance
 Latency of event/alarm propagation 
-P1. A field system detects a change of some value and notifies MSLite. The system operates under normal conditions1. The value is updated on all user screens that display the old value within 3 seconds. 
-P2. An alarm occurs, either originating in a field system or in MSLite. The system operates under normal conditions2. The alarm is displayed on the user interfaces of all users that must receive the alarm within 3 seconds. The Time durations specified in this scenario are performance goals and are not to be taken as hard deadlines. 
+P1. A field system detects a change of some value and notifies MSLite. The system operates under normal conditions [1]. The value is updated on all user screens that display the old value within 3 seconds. 
+P2. An alarm occurs, either originating in a field system or in MSLite. The system operates under normal conditions [2]. The alarm is displayed on the user interfaces of all users that must receive the alarm within 3 seconds. The Time durations specified in this scenario are performance goals and are not to be taken as hard deadlines. 
 (M , M) 
 Reliability
 Alarm/Event propagation 
@@ -863,7 +863,7 @@ S1. An MSLite user wants to view the details and / or change the value of a fiel
 (M , M) 
 Usability
 Alarm / event display 
-U1. The FSS notifies MSLite of a new event that is not an alarm. This non-alarm event is associated to a field point ‘x’. MSLite is operating under normal conditions3. There are ‘n’ users logged into MSLite. There are ‘m’ users that have read privileges to field point ‘x’. Only relevant GUI screens for these ‘m’ users will reflect the update within having received the notification from the FSS. 
+U1. The FSS notifies MSLite of a new event that is not an alarm. This non-alarm event is associated to a field point ‘x’. MSLite is operating under normal conditions 3. There are ‘n’ users logged into MSLite. There are ‘m’ users that have read privileges to field point ‘x’. Only relevant GUI screens for these ‘m’ users will reflect the update within having received the notification from the FSS. 
 (H , M) 
 
 1,2,3 Normal conditions are temporarily specified as follows: 
