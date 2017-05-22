@@ -43,11 +43,11 @@ public class CombinationScenarioGenerator extends ScenarioGenerator {
 
 	private void generate(Map<EStructuralFeature, ListViewer> map, Map<EStructuralFeature, Phrase> newScenario, int currentFeature, Phrase currentPhrase) {
 		EStructuralFeature[] features = (EStructuralFeature[]) map.keySet().toArray(new EStructuralFeature[map.size()]);
+		if (currentPhrase != null)
+          newScenario.put(features[currentFeature - 1], currentPhrase);
 		if (features.length == currentFeature) {
 			saveScenario(newScenario);
-		} else {// generar hijos
-			if (currentPhrase != null)
-				newScenario.put(features[currentFeature - 1], currentPhrase);
+		} else {// generar hijos			
 			List phrases = ((IStructuredSelection) map.get(features[currentFeature]).getSelection()).toList();
 			if (phrases.size() == 0) {
 				generate(map, newScenario, currentFeature + 1, null);
@@ -83,4 +83,10 @@ public class CombinationScenarioGenerator extends ScenarioGenerator {
 		 e.printStackTrace();
 		 }
 	}
+	
+	 @Override
+	  public String toString() {	    
+	    return "Combination";
+	  }  
+	  
 }

@@ -19,15 +19,18 @@ import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -47,6 +50,7 @@ public class ScenarioDialog extends Dialog {
   private ComposedAdapterFactory composedAdapterFactory;
   private Resource resource;
   
+  private ComboViewer viewer;
   private Map<EStructuralFeature, ListViewer> map;
 
   private void openDocumentDialog(String documentLocation, int selectionStart, int selectionEnd) {
@@ -116,15 +120,23 @@ public class ScenarioDialog extends Dialog {
 
   protected Control createDialogArea(Composite parent) {
     Composite root = (Composite) super.createDialogArea(parent);
-    root.setLayout(new GridLayout(2, true));
+    root.setLayout(new GridLayout(2, true)); 
 
     map = new HashMap<EStructuralFeature, ListViewer>();
+    
     createSection(root, "Source", ScenarioPackage.eINSTANCE.getGeneralScenario_Source());
     createSection(root, "Stimulus", ScenarioPackage.eINSTANCE.getGeneralScenario_Stimulus());
     createSection(root, "Environmnet", ScenarioPackage.eINSTANCE.getGeneralScenario_Environment());
     createSection(root, "Artifact", ScenarioPackage.eINSTANCE.getGeneralScenario_Artifact());
     createSection(root, "Response", ScenarioPackage.eINSTANCE.getGeneralScenario_Response());
     createSection(root, "Measure", ScenarioPackage.eINSTANCE.getGeneralScenario_Measure());
+    
+    //add combo box: scenario generator selector    
+    viewer = new ComboViewer(root, SWT.None);
+    viewer.setContentProvider(ArrayContentProvider.getInstance());
+    viewer.add(new MultiValueScenarioGenerator(resource.getURI()));
+    viewer.add(new CombinationScenarioGenerator(resource.getURI()));   
+    new ComboViewer(root, SWT.None);
 
     parent.pack();
     return parent;
@@ -147,10 +159,8 @@ public class ScenarioDialog extends Dialog {
     switch (buttonId) {
       case _GENERATE:
     	  
-    	ScenarioGenerator generator = new MultiValueScenarioGenerator(resource.getURI());
-//    	ScenarioGenerator generator = new CombinationScenarioGenerator(resource.getURI());
-        generator.generate(map);            
-        
+        ScenarioGenerator selectedGenerator = (ScenarioGenerator)((IStructuredSelection)viewer.getSelection()).getFirstElement();           
+        selectedGenerator.generate(map); 
         break;
       default:
         super.buttonPressed(buttonId);

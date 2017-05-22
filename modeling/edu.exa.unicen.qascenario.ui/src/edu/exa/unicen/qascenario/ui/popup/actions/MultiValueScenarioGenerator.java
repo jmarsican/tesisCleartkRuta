@@ -46,4 +46,11 @@ public class MultiValueScenarioGenerator extends ScenarioGenerator {
 
   }
 
+  @Override
+  public String toString() {
+    
+    return "Multi-Value";
+  }  
+  
+
 }
